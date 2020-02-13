@@ -1,9 +1,18 @@
 const assert = require('assert');
 
+const BinaryHeap = require('./binaryHeap');
 const MaxBinaryHeap = require('./maxBinaryHeap');
 const MinBinaryHeap = require('./minBinaryHeap');
 
 function runHeapSortTests() {
+    const heapSort = function(a) {
+        const maxBinaryHeap = new BinaryHeap(a,(a, b) => +a > +b);
+
+        for (let i = 0; a.length > i; ++i) {
+            a[i] = maxBinaryHeap.extractRoot();
+        }
+    };
+
     const ascHeapSort = function(a) {
         const minBinaryHeap = new MinBinaryHeap();
 
@@ -60,6 +69,17 @@ function runHeapSortTests() {
         );
     };
 
+    const testHeapSort = function(testSequence, properAnswer) {
+        let tempArray = testSequence.slice();
+        heapSort(testSequence);
+
+        assert.deepEqual(
+            properAnswer,
+            testSequence,
+            `"HeapSortError: Input: ${tempArray}; Proper answer: ${properAnswer}; Your answer: ${testSequence}`
+        );
+    };
+
     const mergeSort = function(sequence, comparer = (a, b) => +a < +b) {
         if (!sequence || !sequence.length || 1 === sequence.length) {
             return sequence;
@@ -101,6 +121,7 @@ function runHeapSortTests() {
 
                     ascTestHeapSort(testSequence.slice(), ascAnswer);
                     descTestHeapSort(testSequence.slice(), descAnswer);
+                    testHeapSort(testSequence.slice(), descAnswer);
                 }
             }
         }
@@ -120,9 +141,15 @@ function runHeapSortTests() {
     descTestHeapSort([1,2], [2,1]);
     descTestHeapSort([0,1,0], [1,0,0]);
     descTestHeapSort([4,5,1,3,2], [5,4,3,2,1]);
-    descTestHeapSort([1,99,2,88,3,77,4,66,5,55,6,44,7,33,8,22,9,11], [99,88,77,66,55,44,33,22,11,9,8,7,6,5,4,3,2,1]);
 
-    runStressTest(50, 10, 10);
+    testHeapSort([], []);
+    testHeapSort([1], [1]);
+    testHeapSort([1,2], [2,1]);
+    testHeapSort([0,1,0], [1,0,0]);
+    testHeapSort([4,5,1,3,2], [5,4,3,2,1]);
+    testHeapSort([1,99,2,88,3,77,4,66,5,55,6,44,7,33,8,22,9,11], [99,88,77,66,55,44,33,22,11,9,8,7,6,5,4,3,2,1]);
+
+    runStressTest(50, 10, 100);
 }
 
 runHeapSortTests();

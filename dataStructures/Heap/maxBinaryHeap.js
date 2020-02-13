@@ -1,95 +1,55 @@
 class MaxBinaryHeap {
     constructor () {
-        this._baseArray = [];
+        this._data = [];
     }
 
-    _getLeftChildIndex(parentIndex) {
-        return 2 * parentIndex + 1;
-    }
-
-    _getRightChildIndex(parentIndex) {
-        return 2 * parentIndex + 2;
-    }
-
-    _getParentIndex(childIndex) {
-        if (!childIndex) {
-            return -1;
-        }
-
-        return (childIndex - 1) >> 1;
-    }
-
-    _swap(a, firstIndex, secondIndex) {
-        [a[firstIndex], a[secondIndex]] = [a[secondIndex], a[firstIndex]];
-    }
-
-    getMin() {
-        return this._baseArray[0];
+    _swap(i, j) {
+        [this._data[i], this._data[j]] = [this._data[j], this._data[i]];
     }
 
     getSize() {
-        return this._baseArray.length;
+        return this._data.length;
     }
 
     insert(a) {
-        this._baseArray.push(a);
-        this.siftUp(this._baseArray, this._baseArray.length - 1);
+        this._data.push(a);
+        this.siftUp(this.getSize() - 1);
     }
 
     extractRoot() {
-        if (!this._baseArray.length) {
-            return;
+        const root = this._data.shift();
+
+        if (this.getSize()) {
+            this._data.unshift(this._data.pop());
+            this.siftDown(0);
         }
 
-        if (1 === this._baseArray.length) {
-            return this._baseArray.shift();
-        }
-
-        this._swap(this._baseArray, 0, this._baseArray.length - 1);
-        let item = this._baseArray.pop();
-
-        this.siftDown(this._baseArray, 0);
-
-        return item;
+        return root;
     }
 
-    siftUp(a, childIndex) {
-        let parentIndex = this._getParentIndex(childIndex);
-
-        while (0 <= parentIndex) {
-            if (a[childIndex] > a[parentIndex]) {
-                this._swap(a, childIndex, parentIndex);
-                childIndex = parentIndex;
-            }
-
-            parentIndex = this._getParentIndex(parentIndex);
+    siftUp(i) {
+        while (this._data[i] > this._data[((i - 1) >> 1)]) {
+            this._swap(i, ((i - 1) >> 1));
+            i = ((i - 1) >> 1);
         }
     }
 
-    siftDown(a, parentIndex) {
-        let leftChildIndex = this._getLeftChildIndex(parentIndex);
-        let rightChildIndex = this._getRightChildIndex(parentIndex);
+    siftDown(i) {
+        while (this.getSize() > (i << 1) + 1) {
+            const left = (i << 1) + 1;
+            const right = (i << 1) + 2;
+            let j = left;
 
-        while (a.length > leftChildIndex) {
-            if (a.length > rightChildIndex) {
-                if (a[leftChildIndex] > a[rightChildIndex] && a[leftChildIndex] > a[parentIndex]) {
-                    this._swap(a, parentIndex, leftChildIndex);
-                    parentIndex = leftChildIndex;
-                } else if (a[rightChildIndex] > a[parentIndex]) {
-                    this._swap(a, parentIndex, rightChildIndex);
-                    parentIndex = rightChildIndex;
-                } else {
-                    return;
-                }
-            } else if (a[leftChildIndex] > a[parentIndex]) {
-                this._swap(a, parentIndex, leftChildIndex);
-                parentIndex = leftChildIndex;
-            } else {
-                return;
+            if (this.getSize() > right && this._data[right] > this._data[left]) {
+                j = right;
             }
 
-            leftChildIndex = this._getLeftChildIndex(parentIndex);
-            rightChildIndex = this._getRightChildIndex(parentIndex);
+            if (this._data[i] >= this._data[j]) {
+                break;
+            }
+
+            this._swap(i, j);
+            i = j;
         }
     }
 }
