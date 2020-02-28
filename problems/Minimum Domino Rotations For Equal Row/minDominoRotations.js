@@ -4,48 +4,24 @@
  * @return {number}
  */
 var minDominoRotations = function(A, B) {
-    const n = A.length;
-    let rotations = [0, 1, 0, 1];
+    const swaps = [0, 1, 0, 1];
 
-    for (let i = 1; n > i; ++i) {
-        if (~rotations[0] && A[0] !== A[i]) {
-            if (A[0] === B[i]) {
-                ++rotations[0];
-            } else {
-                rotations[0] = -1;
-            }
-        }
-
-        if (~rotations[1] && A[0] !== B[i]) {
-            if (A[0] === A[i]) {
-                ++rotations[1];
-            } else {
-                rotations[1] = -1;
-            }
-        }
-
-        if (~rotations[2] && B[0] !== B[i]) {
-            if (B[0] === A[i]) {
-                ++rotations[2];
-            } else {
-                rotations[2] = -1;
-            }
-        }
-
-        if (~rotations[3] && B[0] !== A[i]) {
-            if (B[0] === B[i]) {
-                ++rotations[3];
-            } else {
-                rotations[3] = -1;
-            }
-        }
-
-        if (!~Math.max(...rotations)) {
-            break;
-        }
+    for (let i = 1; i in A; ++i) {
+        if (0 <= swaps[0] && A[0] !== A[i])
+            if (A[0] === B[i]) ++swaps[0];
+            else swaps[0] = -1;
+        if (0 < swaps[1] && A[0] !== B[i])
+            if (A[0] === A[i]) ++swaps[1];
+            else swaps[1] = -1;
+        if (0 <= swaps[2] && B[0] !== B[i])
+            if (B[0] === A[i]) ++swaps[2];
+            else swaps[2] = -1;
+        if (0 < swaps[3] && B[0] !== A[i])
+            if (B[0] === B[i]) ++swaps[3];
+            else swaps[3] = -1;
+        if (swaps.every(item => -1 === item))
+            return -1;
     }
 
-    const result = rotations.filter(item => ~item);
-
-    return result.length ? Math.min(...result) : -1;
+    return Math.min(...swaps.filter(item => 0 <= item));
 };
