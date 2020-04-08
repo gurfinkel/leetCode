@@ -1,20 +1,18 @@
 public class Solution {
     public bool IsPalindrome(string s) {
-        var store = new List<char>();
+        var n = s.Length;
+        var l = 0;
+        var r = n - 1;
 
-        foreach (var item in s) {
-            if (char.IsDigit(item) || char.IsLetter(item)) {
-                store.Add(char.ToLower(item));
+        while (l < r) {
+            while (l < r && !char.IsLetter(s[l]) && !char.IsDigit(s[l])) {++l;}
+            while (l < r && !char.IsLetter(s[r]) && !char.IsDigit(s[r])) {--r;}
+
+            if (l > r || char.ToLower(s[l++]) != char.ToLower(s[r--])) {
+                return false;
             }
         }
 
-        if (1 == (store.Count & 1)) {
-            store.RemoveAt(store.Count >> 1);
-        }
-
-        var left = store.Take(store.Count >> 1).Reverse();
-        var right = store.Skip(store.Count >> 1);
-
-        return string.Join("", left) == string.Join("", right);
+        return true;
     }
 }

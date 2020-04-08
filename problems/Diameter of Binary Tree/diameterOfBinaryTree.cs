@@ -8,23 +8,24 @@
  * }
  */
 public class Solution {
-    private int Depth(TreeNode node, ref int depth) {
+    public int DiameterOfBinaryTree(TreeNode root) {
+        var result = 0;
+
+        getDepth(root, ref result);
+
+        return result;
+    }
+
+    private int getDepth(TreeNode node, ref int depth) {
         if (null == node) {
             return 0;
         }
 
-        var left = Depth(node.left, ref depth);
-        var right = Depth(node.right, ref depth);
+        var l = getDepth(node.left, ref depth);
+        var r = getDepth(node.right, ref depth);
 
-        depth = Math.Max(depth, 1 + left + right);
+        depth = Math.Max(depth, l + r);
 
-        return 1 + Math.Max(left, right);
-    }
-    public int DiameterOfBinaryTree(TreeNode root) {
-        int depth = 1;
-
-        Depth(root, ref depth);
-
-        return depth - 1;
+        return 1 + Math.Max(l, r);
     }
 }
