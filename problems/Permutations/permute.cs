@@ -1,25 +1,21 @@
 public class Solution {
     public IList<IList<int>> Permute(int[] nums) {
-        var output = new List<IList<int>>();
+        var result = new List<IList<int>>();
 
-        backtrack(nums, output);
+        backtrack(nums, result);
 
-        return output;
+        return result;
     }
 
-    private void backtrack(int[] nums, List<IList<int>> output, int first = 0) {
-            if (first == nums.Length) {
-                output.Add(nums.ToList());
-            }
+    private void backtrack(int[] arr, IList<IList<int>> res, int idx = 0) {
+        if (idx == arr.Length) {
+            res.Add(arr.ToList());
+        }
 
-            for (var i = first; nums.Length > i; ++i) {
-                // place i-th integer first
-                // in the current permutation
-                swap(nums, first, i);
-                // use next integers to complete the permutations
-                backtrack(nums, output, 1 + first);
-                // backtrack
-                swap(nums, first, i);
+        for (var i = idx; arr.Length > i; ++i) {
+            swap(arr, idx, i);
+            backtrack(arr, res, 1 + idx);
+            swap(arr, i, idx);
         }
     }
 
