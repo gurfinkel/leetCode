@@ -1,52 +1,20 @@
 public class Solution {
     public string SimplifyPath(string path) {
-        StringBuilder res = new StringBuilder();
-        string[] arr = path.Trim('/').Split('/');
-        Stack<string> dirs = new Stack<string>();
+        var stack = new Stack<string>();
+        var store = path.Trim('/').Split('/');
 
-        foreach (var s in arr)
-        {
-            if (s.Length == 0)
-            {
+        foreach (var item in store) {
+            if ("." == item || string.IsNullOrEmpty(item)) {
                 continue;
-            }
-
-            if (s == ".")
-            {
-                continue;
-            }
-
-            if (s == "..")
-            {
-                if (dirs.Count > 0)
-                {
-                    dirs.Pop();
+            } else if (".." == item) {
+                if (0 < stack.Count) {
+                    stack.Pop();
                 }
-                continue;
-            }
-
-            dirs.Push(s);
-        }
-
-        if (dirs.Count == 0)
-        {
-            res.Append('/');
-        }
-        else
-        {
-            Stack<string> reverseStack = new Stack<string>();
-            while (dirs.Count > 0)
-            {
-                reverseStack.Push(dirs.Pop());
-            }
-
-            while (reverseStack.Count > 0)
-            {
-                res.Append('/');
-                res.Append(reverseStack.Pop());
+            } else {
+                stack.Push(item);
             }
         }
 
-        return res.ToString();
+        return '/' + string.Join("/", stack.Reverse());
     }
 }
