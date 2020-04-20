@@ -1,27 +1,39 @@
 public class Solution {
     public bool CanPartition(int[] nums) {
-        var sum = nums.Sum();
-        if (sum % 2 != 0) return false;
+        var n = nums.Length;
+        var totalSum = nums.Sum();
 
-        var half = sum / 2;
-        if (half < nums.Max()) return false;
+        if (1 == (totalSum & 1)) {
+            return false;
+        }
 
-        Array.Sort(nums);
-        return Helper(nums, nums.Length - 1, half);
+        var halfOfTotalSum = totalSum >> 1;
+
+        Array.Sort(nums, (a, b) => b - a);
+        return hasSumDfs(nums, halfOfTotalSum);
+
+        // return hasSubsetSumDp(nums, halfOfTotalSum);
     }
 
-    private bool Helper(int[] nums, int endIndex, int remaining) {
-        if (remaining == 0 || nums[endIndex] == remaining) return true;
+    private bool hasSumDp(int[] arr, int halfOfTotalSum) {
+        var n = arr.Length;
+        var dp = new bool[1 + halfOfTotalSum, 1 + n];
 
-        if (nums[endIndex] > remaining) return false;
-
-        for(var i = endIndex - 1; i >= 0; i--) {
-            //Console.WriteLine($"{endIndex} - {i}");
-            if(Helper(nums, i, remaining - nums[endIndex])) {
-                return true;
+        for (var sum = 0; halfOfTotalSum >= sum; ++sum) {
+            for (var idx = 0; n > idx; ++idx) {
+                dp[sum, 1 + idx] = 0 == sum || dp[sum, idx] || 0 <= sum - arr[idx] && dp[sum - arr[idx], idx];
             }
         }
 
-        return false;
+        return dp[halfOfTotalSum, n];
+    }
+
+    private bool hasSumDfs(int[] nums, int target, int i = 0, int sumL = 0, int sumR = 0) {
+        if (nums.Length == i){
+            return sumL == sumR;
+        }
+
+        return sumL + nums[i] <= target && hasSumDfs(nums, target, 1 + i, sumL + nums[i], sumR)
+            || sumR + nums[i] <= target && hasSumDfs(nums, target, 1 + i, sumL, sumR + nums[i]);
     }
 }

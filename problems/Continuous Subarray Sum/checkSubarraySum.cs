@@ -1,9 +1,7 @@
 public class Solution {
     public bool CheckSubarraySum(int[] nums, int k) {
+        var store = new Dictionary<int, int> {{0, 0}};
         var sum = 0;
-        var store = new Dictionary<int, int>();
-
-        store.Add(0, 0);
 
         for (var i = 0; nums.Length > i; ++i) {
             sum += nums[i];

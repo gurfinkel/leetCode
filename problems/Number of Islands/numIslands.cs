@@ -4,26 +4,26 @@ public class Solution {
             return 0;
         }
 
-        var nr = grid.Length;
-        var nc = grid[0].Length;
+        var rows = grid.Length;
+        var cols = grid[0].Length;
         var dsu = new Dsu(grid);
 
-        for (int r = 0; r < nr; ++r) {
-            for (int c = 0; c < nc; ++c) {
-                if ('1' == grid[r][c]) {
-                    grid[r][c] = '0';
+        for (var row = 0; rows > row; ++row) {
+            for (var col = 0; cols > col; ++col) {
+                if ('1' == grid[row][col]) {
+                    grid[row][col] = '0';
 
-                    if (r - 1 >= 0 && grid[r-1][c] == '1') {
-                        dsu.union(r * nc + c, (r-1) * nc + c);
+                    if (0 < row && '1' == grid[row - 1][col]) {
+                        dsu.union(cols * row + col, cols * (row - 1) + col);
                     }
-                    if (r + 1 < nr && grid[r+1][c] == '1') {
-                        dsu.union(r * nc + c, (r+1) * nc + c);
+                    if (0 < col && '1' == grid[row][col - 1]) {
+                        dsu.union(cols * row + col, cols * row + col - 1);
                     }
-                    if (c - 1 >= 0 && grid[r][c-1] == '1') {
-                        dsu.union(r * nc + c, r * nc + c - 1);
+                    if (rows > 1 + row && '1' == grid[1 + row][col]) {
+                        dsu.union(cols * row + col, cols * (1 + row) + col);
                     }
-                    if (c + 1 < nc && grid[r][c+1] == '1') {
-                        dsu.union(r * nc + c, r * nc + c + 1);
+                    if (cols > 1 + col && '1' == grid[row][1 + col]) {
+                        dsu.union(cols * row + col, cols * row + 1 + col);
                     }
                 }
             }
@@ -47,7 +47,7 @@ public class Solution {
             for (var row = 0; rows > row; ++row) {
                 for (var col = 0; cols > col; ++col) {
                     if ('1' == grid[row][col]) {
-                        _parents[row * cols + col] = row * cols + col;
+                        _parents[cols * row + col] = cols * row + col;
                         ++_connectedComponentsCount;
                     }
                 }
@@ -66,25 +66,21 @@ public class Solution {
             return _parents[x];
         }
 
-        public bool union(int x, int y) {
+        public void union(int x, int y) {
             var px = find(x);
             var py = find(y);
 
-            if (px == py) {
-                return false;
+            if (px != py) {
+                --_connectedComponentsCount;
+
+                if (_ranks[px] > _ranks[py]) {
+                    _parents[py] = px;
+                    ++_ranks[px];
+                } else {
+                    _parents[px] = py;
+                    ++_ranks[py];
+                }
             }
-
-            if (_ranks[px] > _ranks[py]) {
-                _parents[py] = px;
-                ++_ranks[px];
-            } else {
-                _parents[px] = py;
-                ++_ranks[py];
-            }
-
-            --_connectedComponentsCount;
-
-            return true;
         }
     }
 }

@@ -1,13 +1,19 @@
 public class Solution {
     public bool CheckValidString(string s) {
-        var lo = 0;
-        var hi = 0;
-        foreach (char c in s) {
-            lo += c == '(' ? 1 : -1;
-            hi += c != ')' ? 1 : -1;
-            if (hi < 0) break;
-            lo = Math.Max(lo, 0);
+        var l = 0;
+        var r = 0;
+
+        foreach (var letter in s) {
+            l += '(' == letter ? 1 : -1;
+            r += ')' != letter ? 1 : -1;
+
+            if (0 > r) {
+                break;
+            }
+
+            l = Math.Max(0, l);
         }
-        return lo == 0;
+
+        return 0 == l;
     }
 }

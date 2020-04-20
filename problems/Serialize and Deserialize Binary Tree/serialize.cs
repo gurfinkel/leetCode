@@ -8,42 +8,44 @@
  * }
  */
 public class Codec {
-    private void serializeTree(TreeNode node, List<string> str) {
-        if (null == node) {
-            str.Add("null");
-        } else {
-            str.Add(node.val.ToString());
-            serializeTree(node.left, str);
-            serializeTree(node.right, str);
-        }
-    }
-
-    private TreeNode deserializeTree(List<string> str) {
-        if ("null".Equals(str[0])) {
-            str.RemoveAt(0);
-            return null;
-        }
-
-        var node = new TreeNode(int.Parse(str[0]));
-        str.RemoveAt(0);
-        node.left = deserializeTree(str);
-        node.right = deserializeTree(str);
-
-        return node;
-    }
 
     // Encodes a tree to a single string.
     public string serialize(TreeNode root) {
-        var treeAsString = new List<string>();
+        var store = new List<string>();
 
-        serializeTree(root, treeAsString);
+        serializeTree(root, store);
 
-        return string.Join(",", treeAsString);
+        return string.Join(",", store);
     }
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(string data) {
-        return deserializeTree(data.Split(",").ToList());
+        var store = new Queue<string>(data.Split(","));
+
+        return deserializeTree(store);
+    }
+
+    private void serializeTree(TreeNode node, List<string> store) {
+        if (null == node) {
+            store.Add("null");
+        } else {
+            store.Add(node.val.ToString());
+            serializeTree(node.left, store);
+            serializeTree(node.right, store);
+        }
+    }
+
+    private TreeNode deserializeTree(Queue<string> data) {
+        if ("null" == data.Peek()) {
+            data.Dequeue();
+            return null;
+        } else {
+            var node = new TreeNode(int.Parse(data.Dequeue()));
+            node.left = deserializeTree(data);
+            node.right = deserializeTree(data);
+
+            return node;
+        }
     }
 }
 
