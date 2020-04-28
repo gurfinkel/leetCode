@@ -1,16 +1,17 @@
 public class Solution {
     public int LongestPalindromeSubseq(string s) {
-        int n = s.Length;
-        int[,] dp = new int[n, n];
-        for(int j = 0; j < n; j++)
-        {
-             dp[j, j] = 1;
-            for(int i = j - 1; i >= 0; i--)
-            {
-                if(s[i] == s[j])
-                    dp[i, j] = dp[i + 1, j - 1] + 2;
-                else
-                    dp[i, j] = Math.Max(dp[i + 1, j], dp[i, j - 1]);
+        var n = s.Length;
+        var dp = new int[n, n];
+
+        for (var right = 0; n > right; ++right) {
+            dp[right, right] = 1;
+
+            for (var left = right - 1; 0 <= left; --left) {
+                if (s[left] == s[right]) {
+                    dp[left, right] = dp[1 + left, right - 1] + 2;
+                } else {
+                    dp[left, right] = Math.Max(dp[1+left,right],dp[left,right-1]);
+                }
             }
         }
 
