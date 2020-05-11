@@ -1,0 +1,16 @@
+public class Solution {
+    public bool CheckStraightLine(int[][] coordinates) {
+        var a = (double)(coordinates[1][1] - coordinates[0][1])/(coordinates[1][0] - coordinates[0][0]);
+
+        for (var i = 2; coordinates.Length > i; ++i) {
+            double x = coordinates[i][0];
+            double y = coordinates[i][1];
+
+            if (a != (y - coordinates[1][1]) / (x - coordinates[1][0])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
