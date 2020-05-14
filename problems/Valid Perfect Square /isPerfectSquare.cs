@@ -1,11 +1,15 @@
 public class Solution {
     public bool IsPerfectSquare(int num) {
-        if (num < 2) return true;
-
-        long x = num / 2;
-        while (x * x > num) {
-          x = (x + num / x) / 2;
+        if (2 > num) {
+            return true;
         }
-        return (x * x == num);
+
+        long x = num >> 1;
+
+        while (num < x * x) {
+            x = (x + num / x) >> 1;
+        }
+
+        return (num == x * x);
     }
 }

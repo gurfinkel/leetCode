@@ -1,112 +1,81 @@
 public class Solution {
     public string NumberToWords(int num) {
-        if (num == 0)
+        if (0 == num) {
             return "Zero";
+        }
 
-            int billion = num / 1000000000;
-            int million = (num - billion * 1000000000) / 1000000;
-            int thousand = (num - billion * 1000000000 - million * 1000000) / 1000;
-            int rest = num - billion * 1000000000 - million * 1000000 - thousand * 1000;
+        List<string> result = new List<string>();
+        int billions = num / 1000000000;
+        num -= billions * 1000000000;
+        int millions = num / 1000000;
+        num -= millions * 1000000;
+        int thousands = num / 1000;
+        num -= thousands * 1000;
 
-            String result = "";
-            if (billion != 0)
-                result = three(billion) + " Billion";
+        if (0 < billions) {
+            result.Add(stringFromTreeDigits(billions));
+            result.Add("Billion");
+        }
 
-            if (million != 0) {
-                if (!string.IsNullOrEmpty(result))
-                    result += " ";
-                    result += three(million) + " Million";
+        if (0 < millions) {
+            result.Add(stringFromTreeDigits(millions));
+            result.Add("Million");
+        }
+
+        if (0 < thousands) {
+            result.Add(stringFromTreeDigits(thousands));
+            result.Add("Thousand");
+        }
+
+        if (0 < num) {
+            result.Add(stringFromTreeDigits(num));
+        }
+
+        return string.Join(" ", result);
+    }
+
+    private string stringFromTreeDigits(int num) {
+        List<string> result = new List<string>();
+        int hundreds = num / 100;
+
+        num -= hundreds * 100;
+
+        if (0 < hundreds) {
+            result.Add(getDigit(hundreds));
+            result.Add("Hundred");
+        }
+
+        if (0 < num) {
+            if (20 <= num) {
+                result.Add(getTens(num / 10));
+                if (0 != num % 10) {
+                    result.Add(getDigit(num % 10));
+                }
+            } else if (10 <= num && 20 > num) {
+                result.Add(getExtras(num));
+            } else {
+                result.Add(getDigit(num));
             }
-
-            if (thousand != 0) {
-                if (!string.IsNullOrEmpty(result))
-                    result += " ";
-                    result += three(thousand) + " Thousand";
-            }
-
-            if (rest != 0) {
-                if (!string.IsNullOrEmpty(result))
-                    result += " ";
-                    result += three(rest);
-            }
-
-            return result;
-    }
-
-    public String one(int num) {
-        switch(num) {
-            case 1: return "One";
-            case 2: return "Two";
-            case 3: return "Three";
-            case 4: return "Four";
-            case 5: return "Five";
-            case 6: return "Six";
-            case 7: return "Seven";
-            case 8: return "Eight";
-            case 9: return "Nine";
         }
-        return "";
+
+        return string.Join(" ", result);
     }
 
-    public String twoLessThan20(int num) {
-        switch(num) {
-            case 10: return "Ten";
-            case 11: return "Eleven";
-            case 12: return "Twelve";
-            case 13: return "Thirteen";
-            case 14: return "Fourteen";
-            case 15: return "Fifteen";
-            case 16: return "Sixteen";
-            case 17: return "Seventeen";
-            case 18: return "Eighteen";
-            case 19: return "Nineteen";
-        }
-        return "";
+    private string getDigit(int num) {
+        var digits = new Dictionary<int, string>{{1, "One"}, {2, "Two"}, {3, "Three"}, {4, "Four"}, {5, "Five"}, {6, "Six"}, {7, "Seven"}, {8, "Eight"}, {9, "Nine"}};
+
+        return digits[num];
     }
 
-    public String ten(int num) {
-        switch(num) {
-            case 2: return "Twenty";
-            case 3: return "Thirty";
-            case 4: return "Forty";
-            case 5: return "Fifty";
-            case 6: return "Sixty";
-            case 7: return "Seventy";
-            case 8: return "Eighty";
-            case 9: return "Ninety";
-        }
-    return "";
+    private string getExtras(int num) {
+        var extras = new Dictionary<int, string>{{10,"Ten"},{11,"Eleven"},{12,"Twelve"},{13,"Thirteen"},{14,"Fourteen"},{15,"Fifteen"},{16,"Sixteen"},{17,"Seventeen"},{18,"Eighteen"},{19,"Nineteen"}};
+
+        return extras[num];
     }
 
-    public String two(int num) {
-        if (num == 0)
-            return "";
-        else if (num < 10)
-            return one(num);
-        else if (num < 20)
-            return twoLessThan20(num);
-        else {
-            int tenner = num / 10;
-            int rest = num - tenner * 10;
-            if (rest != 0)
-                return ten(tenner) + " " + one(rest);
-            else
-                return ten(tenner);
-        }
-    }
+    private string getTens(int num) {
+        var tens = new Dictionary<int, string>{{2,"Twenty"},{3,"Thirty"},{4,"Forty"},{5,"Fifty"},{6,"Sixty"},{7,"Seventy"},{8,"Eighty"},{9,"Ninety"}};
 
-    public String three(int num) {
-        int hundred = num / 100;
-        int rest = num - hundred * 100;
-        String res = "";
-
-        if (hundred*rest != 0)
-            res = one(hundred) + " Hundred " + two(rest);
-        else if ((hundred == 0) && (rest != 0))
-            res = two(rest);
-        else if ((hundred != 0) && (rest == 0))
-            res = one(hundred) + " Hundred";
-
-        return res;
+        return tens[num];
     }
 }
