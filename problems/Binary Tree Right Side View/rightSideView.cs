@@ -4,42 +4,40 @@
  *     public int val;
  *     public TreeNode left;
  *     public TreeNode right;
- *     public TreeNode(int x) { val = x; }
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
 public class Solution {
     public IList<int> RightSideView(TreeNode root) {
-        if (root == null)
-        {
-            return new List<int>();
+        var result = new List<int>();
+        var bfs = new Queue<TreeNode>();
+
+        if (null != root) {
+            bfs.Enqueue(root);
         }
 
-        Queue<TreeNode> bfs = new Queue<TreeNode>();
-        bfs.Enqueue(root);
-        IList<int> res = new List<int>();
-
-        while (bfs.Count != 0)
-        {
-            int count = bfs.Count;
+        while (0 < bfs.Count) {
+            var count = bfs.Count;
             TreeNode node = null;
-            for (int i = 0; i < count; i++)
-            {
+
+            for (var i = 0; count > i; ++i) {
                 node = bfs.Dequeue();
 
-                if (node.left != null)
-                {
+                if (null != node.left) {
                     bfs.Enqueue(node.left);
                 }
-
-                if (node.right != null)
-                {
+                if (null != node.right) {
                     bfs.Enqueue(node.right);
                 }
             }
 
-            res.Add(node.val);
+            result.Add(node.val);
         }
 
-        return res;
+        return result;
     }
 }
