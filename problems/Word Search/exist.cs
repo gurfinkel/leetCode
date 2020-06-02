@@ -1,30 +1,9 @@
 public class Solution {
     public bool Exist(char[][] board, string word) {
-        if (board.Length == 0)
-        {
-            return false;
-        }
-
-        int n = board.Length;
-        int m = board[0].Length;
-
-        bool[,] visited = new bool[n, m];
-
-        if (word.Length == 0)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < board.Length; i++)
-        {
-            for (int j = 0; j < board[i].Length; j++)
-            {
-                if (board[i][j] == word[0])
-                {
-                    if (Helper(board, visited, ref word, 0, (i, j)))
-                    {
-                        return true;
-                    }
+        for (var i = 0; board.Length > i; ++i) {
+            for (var j = 0; board[0].Length > j; ++j) {
+                if (backtrack(board, word, new StringBuilder(), i, j)) {
+                    return true;
                 }
             }
         }
@@ -32,34 +11,32 @@ public class Solution {
         return false;
     }
 
-    private static readonly (int, int)[] _directions = { (1, 0), (-1, 0), (0, 1), (0, -1) };
-
-    private bool Helper(char[][] board, bool[,] visited, ref string word, int charIdx, (int, int) cell)
-    {
-        if (charIdx == word.Length - 1)
-        {
+    private bool backtrack(char[][] board, string word, StringBuilder sb, int i, int j, int idx = 0) {
+        if (word.Length == idx) {
             return true;
         }
 
-        visited[cell.Item1, cell.Item2] = true;
+        var rows = board.Length;
+        var cols = board[0].Length;
 
-        foreach (var direction in _directions)
-        {
-            (int, int) newCell = (cell.Item1 + direction.Item1, cell.Item2 + direction.Item2);
-            if (newCell.Item1 >= 0 && newCell.Item1 < board.Length && newCell.Item2 >= 0 &&
-                newCell.Item2 < board[newCell.Item1].Length)
-            {
-                if (board[newCell.Item1][newCell.Item2] == word[charIdx + 1] && !visited[newCell.Item1, newCell.Item2])
-                {
-                    if (Helper(board, visited, ref word, charIdx + 1, newCell))
-                    {
-                        return true;
-                    }
-                }
-            }
+        if (0>i||0>j||rows<=i||cols<=j||word[idx]!=board[i][j]) {
+            return false;
         }
 
-        visited[cell.Item1, cell.Item2] = false;
+        sb.Append(board[i][j]);
+        board[i][j] = '$';
+
+        var up = backtrack(board, word, sb, i - 1, j, 1 + idx);
+        if (up) return true;
+        var left = backtrack(board, word, sb, i, j - 1, 1 + idx);
+        if (left) return true;
+        var down = backtrack(board, word, sb, i + 1, j, 1 + idx);
+        if (down) return true;
+        var right = backtrack(board, word, sb, i, j + 1, 1 + idx);
+        if (right) return true;
+
+        board[i][j] = sb[sb.Length - 1];
+        sb.Remove(sb.Length - 1, 1);
 
         return false;
     }

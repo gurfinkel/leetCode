@@ -1,11 +1,13 @@
-public class Solution {
-    public void MoveZeroes(int[] nums) {
-        for (int i = 0, j = 0; nums.Length > i; ++i) {
-            if (0 != nums[i]) {
-                nums[j++] = nums[i];
+class Solution {
+    public void moveZeroes(int[] nums) {
+        var nonZeroIdx = 0;
+
+        for (var idx = 0; nums.length > idx; ++idx) {
+            if (0 != nums[idx]) {
+                nums[nonZeroIdx++] = nums[idx];
             }
-            if (i >= j) {
-                nums[i] = 0;
+            if (idx >= nonZeroIdx) {
+                nums[idx] = 0;
             }
         }
     }

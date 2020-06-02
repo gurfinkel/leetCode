@@ -1,59 +1,36 @@
 public class Solution {
-    // Topology Sort
     public bool CanFinish(int numCourses, int[][] prerequisites) {
-        int[] incoming = new int[numCourses];
-        var graph = new List<int>[numCourses];
-        var visited = new HashSet<int>();
-        foreach(int[] pre in prerequisites)
-        {
-            int current = pre[0];
-            int prereq = pre[1];
-            incoming[current]++;
-            if(graph[prereq] == null)
-                graph[prereq] = new List<int>();
-            graph[prereq].Add(current);
+        var grid = new bool[numCourses, numCourses];
+        var colours = new int[numCourses];
+
+        foreach (var item in prerequisites) {
+            grid[item[1], item[0]] = true;
         }
 
-        var zeroPrereqCourses = FindZeroCount(incoming, visited);
-
-        while(zeroPrereqCourses.Count > 0)
-        {
-            var temp = new List<int>();
-            foreach(var cur in zeroPrereqCourses)
-            {
-                visited.Add(cur);
-
-                if(visited.Count == numCourses)
-                    return true;
-
-                var neighbors = graph[cur];
-
-                if(neighbors == null)
-                    continue;
-
-                foreach(var neighbor in neighbors)
-                {
-                    incoming[neighbor]--;
-                    if(incoming[neighbor] == 0)
-                        temp.Add(neighbor);
+        for (var i = 0; numCourses > i; ++i) {
+            for (var j = 0; numCourses > j; ++j) {
+                if (grid[i, j] && 0 == colours[j] && !dfs(grid, colours, j)) {
+                    return false;
                 }
             }
-
-            zeroPrereqCourses = temp;
         }
 
-        return visited.Count == numCourses;
+        return true;
     }
 
-    private List<int> FindZeroCount(int[] arr, HashSet<int> visited)
-    {
-        var result = new List<int>();
+    private bool dfs(bool[,] grid, int[] colours, int idx = 0) {
+        colours[idx] = 1;
 
-        for(int i = 0; i < arr.Length; i++)
-        {
-            if(!visited.Contains(i) && arr[i] == 0)
-                result.Add(i);
+        for (var i = 0; colours.Length > i; ++i) {
+            if (grid[idx, i]) {
+                if (1 == colours[i] || (0 == colours[i] && !dfs(grid, colours, i))) {
+                    return false;
+                }
+            }
         }
-        return result;
+
+        colours[idx] = 2;
+
+        return true;
     }
 }
