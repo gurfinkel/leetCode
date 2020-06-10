@@ -1,20 +1,30 @@
 public class Solution {
     public int LongestPalindromeSubseq(string s) {
-        var n = s.Length;
-        var dp = new int[n, n];
+        int[,] dp = new int[s.Length, s.Length];
 
-        for (var right = 0; n > right; ++right) {
-            dp[right, right] = 1;
+        return lpsTopDown(s, dp, 0, s.Length - 1);
+    }
 
-            for (var left = right - 1; 0 <= left; --left) {
-                if (s[left] == s[right]) {
-                    dp[left, right] = dp[1 + left, right - 1] + 2;
-                } else {
-                    dp[left, right] = Math.Max(dp[1+left,right],dp[left,right-1]);
-                }
+    private int lpsTopDown(string s, int[,] dp, int start, int end) {
+        if (start > end) {
+            return 0;
+        }
+
+        if (start == end) {
+            return 1;
+        }
+
+        if (0 == dp[start, end]) {
+            if (s[start] == s[end]) {
+                dp[start, end] = 2 + lpsTopDown(s, dp, 1 + start, end - 1);
+            } else {
+                int lpsLeft = lpsTopDown(s, dp, 1 + start, end);
+                int lpsRight = lpsTopDown(s, dp, start, end - 1);
+
+                dp[start, end] = Math.Max(lpsLeft, lpsRight);
             }
         }
 
-        return dp[0, n - 1];
+        return dp[start, end];
     }
 }

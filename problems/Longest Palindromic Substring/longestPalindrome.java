@@ -4,29 +4,49 @@ class Solution {
             return "";
         }
 
-        int startIdx = 0;
-        int endIdx = 0;
+        int n = s.length();
+        Integer[][] dp = new Integer[n][n];
+        StringBuilder lps = new StringBuilder();
 
-        for (int idx = 0; s.length() > idx; ++idx) {
-            int len1 = expandAroundCenter(s, idx, idx);
-            int len2 = expandAroundCenter(s, idx, 1 + idx);
-            int len = Math.max(len1, len2);
+        lps.append(s.charAt(0));
+        lpsTopDown(s, dp, 0, n - 1, lps);
 
-            if (len > 1 + endIdx - startIdx) {
-                startIdx = idx - ((len - 1) >> 1);
-                endIdx = idx + (len >> 1);
-            }
-        }
+        // System.out.println("lps: " + lpsTopDown(s, dp, 0, n - 1, lps));
 
-        return s.substring(startIdx, 1 + endIdx);
+        return lps.toString();
     }
 
-    private int expandAroundCenter(String s, int left, int right) {
-        while (0 <= left && s.length() > right && s.charAt(left) == s.charAt(right)) {
-            --left;
-            ++right;
+    private int lpsTopDown(String s, Integer[][] dp, int start, int end, StringBuilder lps) {
+        if (start > end) {
+            return 0;
         }
 
-        return right - left - 1;
+        if (start == end) {
+            return 1;
+        }
+
+        if (null == dp[start][end]) {
+            if (s.charAt(start) == s.charAt(end)) {
+                int remainingLen = end - start - 1;
+
+                if (remainingLen == lpsTopDown(s, dp, 1 + start, end - 1, lps)) {
+                    dp[start][end] = 2 + remainingLen;
+
+                    if (dp[start][end] > lps.length()) {
+                        lps.setLength(0);
+                        lps.append(s.substring(start, 1 + end));
+                    }
+
+                    return dp[start][end];
+                }
+            }
+
+            int left = lpsTopDown(s, dp, 1 + start, end, lps);
+            int right = lpsTopDown(s, dp, start, end - 1, lps);
+
+            dp[start][end] = Math.max(left, right);
+        }
+
+        return dp[start][end];
     }
 }
