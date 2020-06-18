@@ -1,53 +1,49 @@
 public class RandomizedSet {
+    private Dictionary<int, int> _mapIdxToVal;
+    private Dictionary<int, int> _mapValToIdx;
+    private Random _random;
 
     /** Initialize your data structure here. */
     public RandomizedSet() {
-        this.set = new List<int>();
-        this.map = new Dictionary<int, int>();
-        this.random = new Random();
+        _mapIdxToVal = new Dictionary<int, int>();
+        _mapValToIdx = new Dictionary<int, int>();
+        _random = new Random();
     }
 
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public bool Insert(int val) {
-        if (!this.map.ContainsKey(val))
-        {
-            this.map[val] = this.set.Count;
-            this.set.Add(val);
+        if (!_mapValToIdx.ContainsKey(val)) {
+            _mapValToIdx.Add(val, _mapValToIdx.Count);
+            _mapIdxToVal.Add(_mapIdxToVal.Count, val);
+
             return true;
         }
+
         return false;
     }
 
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     public bool Remove(int val) {
-        int valIndex;
-        if (this.map.TryGetValue(val, out valIndex))
-        {
-            //Cache current last element in set.
-            int lastIndexInSet = this.set.Count - 1;
-            int lastElement = this.set[lastIndexInSet];
-            //Move val to be removed to last in set.
-            this.map[val] = lastIndexInSet;
-            this.set[lastIndexInSet] = val;
-            //Move cached last element to where the val to be removed was before it was move to last.
-            this.set[valIndex] = lastElement;
-            this.map[lastElement] = valIndex;
-            //Remove the last element from the set.
-            this.set.RemoveAt(this.set.Count - 1);
-            this.map.Remove(val);
+        if (_mapValToIdx.ContainsKey(val)) {
+            int currIdx = _mapValToIdx[val];
+            int lastIdx = _mapIdxToVal.Count - 1;
+            int lastVal = _mapIdxToVal[lastIdx];
+
+            _mapIdxToVal[currIdx] = lastVal;
+            _mapValToIdx[lastVal] = currIdx;
+            _mapIdxToVal.Remove(lastIdx);
+            _mapValToIdx.Remove(val);
+
             return true;
         }
+
         return false;
     }
 
     /** Get a random element from the set. */
     public int GetRandom() {
-        return this.set[this.random.Next(this.set.Count)];
+        return _mapIdxToVal[_random.Next(_mapIdxToVal.Count)];
     }
-
-    List<int> set;
-    Dictionary<int, int> map;
-    Random random;
 }
 
 /**
