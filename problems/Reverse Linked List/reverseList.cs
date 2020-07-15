@@ -32,15 +32,15 @@ public class Solution {
 
     private ListNode ReverseListRecursive(ListNode head) {
         if (null == head || null == head.next) {
-            return head;
+            return head; // 2
         }
-        // 4 -> 5 -> null
-        var newTail = head.next; // 5
-        var newHead = ReverseList(newTail); // 5
+        // 1 -> 2 -> 3 -> null
+        var newTail = head.next; // 3
+        var newHead = ReverseList(newTail); // 3
 
-        newTail.next = head; // 5 -> 4
-        head.next = null; // 4 -> null
+        newTail.next = head; // 3 -> 2
+        head.next = null; // 2 -> null
 
-        return newHead; // 5
+        return newHead; // 3
     }
 }
