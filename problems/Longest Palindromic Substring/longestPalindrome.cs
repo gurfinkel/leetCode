@@ -1,23 +1,27 @@
 public class Solution {
     public string LongestPalindrome(string s) {
+        return longestPalindromeBottomUp(s);
+    }
+
+    private string longestPalindromeBottomUp(string s) {
         int n = s.Length;
         bool[,] dp = new bool[n, n];
-        string lps = "";
+        string lp = "";
 
-        for (int start = n - 1; 0 <= start; --start) {
-            for (int end = start; n > end; ++end) {
-                if (s[start] == s[end]) {
-                    if (2 >= 1 + end - start || dp[1 + start, end - 1]) {
-                        dp[start, end] = true;
+        for (int left = n - 1; 0 <= left; --left) {
+            for (int right = left; n > right; ++right) {
+                if (s[left] == s[right]) {
+                    if (2 >= 1 + right - left || dp[1 + left, right - 1]) {
+                        dp[left, right] = true;
 
-                        if (lps.Length < 1 + end - start) {
-                            lps = s.Substring(start, 1 + end - start);
+                        if (lp.Length < 1 + right - left) {
+                            lp = s.Substring(left, 1 + right - left);
                         }
                     }
                 }
             }
         }
 
-        return lps;
+        return lp;
     }
 }

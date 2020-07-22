@@ -1,18 +1,21 @@
 public class Solution {
     public int CoinChange(int[] coins, int amount) {
-        var dp = new int[1 + amount];
+        return CoinChangeBottomUp(coins, amount);
+    }
+
+    public int CoinChangeBottomUp(int[] coins, int amount) {
+        int[] dp = new int[1 + amount];
 
         Array.Fill(dp, int.MaxValue);
 
-        for (var idx = 0; coins.Length > idx; ++idx) {
-            var coin = coins[idx];
-
-            for (var sum = 0; amount >= sum; ++sum) {
+        foreach (int coin in coins) {
+            for (int sum = 0; amount >= sum; ++sum) {
                 if (0 == sum) {
                     dp[sum] = 0;
-                } else {
+                } else if (coin <= sum) {
                     var sumWithout = dp[sum];
-                    var sumWith = sum >= coin && int.MaxValue != dp[sum - coin] ? 1 + dp[sum - coin] : int.MaxValue;
+                    var sumWith = int.MaxValue == dp[sum - coin] ? int.MaxValue : 1 + dp[sum - coin];
+
                     dp[sum] = Math.Min(sumWith, sumWithout);
                 }
             }
