@@ -1,23 +1,18 @@
 public class Solution {
     public IList<int> FindDuplicates(int[] nums) {
-        IList<int> res = new List<int>();
+        int n = nums.Length;
+        IList<int> result = new List<int>();
 
-        for (int i = 0; i < nums.Length; i++)
-        {
-            int val = nums[i];
+        foreach (int num in nums) {
+            int idx = 0 >= num ? num + n - 1 : num - 1;
 
-            int idx = val <= 0 ? val + nums.Length - 1 : val - 1;
-
-            if (nums[idx] <= 0)
-            {
-                res.Add(idx + 1);
-            }
-            else
-            {
-                nums[idx] -= nums.Length;
+            if (nums[idx] <= 0) {
+                result.Add(1 + idx);
+            } else {
+                nums[idx] -= n;
             }
         }
 
-        return res;
+        return result;
     }
 }
