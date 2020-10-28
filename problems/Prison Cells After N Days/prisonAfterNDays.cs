@@ -1,48 +1,49 @@
 public class Solution {
     public int[] PrisonAfterNDays(int[] cells, int N) {
         Dictionary<int, int> store = new Dictionary<int, int>();
-        bool isFastForwarded = false;
+        int step = 0;
+        bool flag = true;
 
-        while (0 < N--) {
-            if (!isFastForwarded) {
-                int stateBitmap = cellsToBitmap(cells);
+        store.Add(cellsToBitmap(cells), step);
 
-                if (store.ContainsKey(stateBitmap)) {
-                    N %= store[stateBitmap] - N;
-                    isFastForwarded = true;
+        while (step++ < N) {
+            cells = getNextState(cells);
+
+            if (flag) {
+                int bitMap = cellsToBitmap(cells);
+
+                if (store.ContainsKey(bitMap)) {
+                    N = (N - store[bitMap]) % (step - store[bitMap]);
+                    step = 0;
+                    flag = false;
                 } else {
-                    store.Add(stateBitmap, N);
+                    store.Add(bitMap, step);
                 }
             }
-
-            cells = nextDay(cells);
         }
 
         return cells;
     }
 
     private int cellsToBitmap(int[] cells) {
-        int stateBitmap = 0x0;
+        int bitMap = 0;
 
         foreach (int cell in cells) {
-            stateBitmap <<= 1;
-            stateBitmap = (stateBitmap | cell);
+            bitMap <<= 1;
+            bitMap |= cell;
         }
 
-        return stateBitmap;
+        return bitMap;
     }
 
-    private int[] nextDay(int[] cells) {
-        int[] newCells = new int[cells.Length];
+    private int[] getNextState(int[] cells) {
+        int n = cells.Length;
+        int[] nextState = new int[n];
 
-        newCells[0] = 0;
-
-        for (int i = 1; cells.Length > 1 + i; ++i) {
-            newCells[i] = (0 == (cells[i - 1]^cells[i + 1])) ? 1 : 0;
+        for (int idx = 1; n - 1 > idx; ++idx) {
+            nextState[idx] = (0 == (cells[idx - 1] ^ cells[idx + 1])) ? 1 : 0;
         }
 
-        newCells[cells.Length - 1] = 0;
-
-        return newCells;
+        return nextState;
     }
 }
