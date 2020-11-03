@@ -1,59 +1,56 @@
 public class Trie {
 
+    private readonly TrieNode _root = new TrieNode();
+
     /** Initialize your data structure here. */
     public Trie() {
-
     }
 
     /** Inserts a word into the trie. */
     public void Insert(string word) {
-        var curr = root;
+        TrieNode currNode = _root;
 
-        foreach (var letter in word) {
-            if (null == curr.children[letter - 'a']) {
-                curr.children[letter - 'a'] = new TreeNode();
+        foreach (char letter in word) {
+            if (!currNode.Children.ContainsKey(letter)) {
+                currNode.Children[letter] = new TrieNode();
             }
-            curr = curr.children[letter - 'a'];
+            currNode = currNode.Children[letter];
         }
 
-        curr.endOfWord = true;
+        currNode.IsEnd = true;
     }
 
     /** Returns if the word is in the trie. */
     public bool Search(string word) {
-        var curr = root;
+        TrieNode currNode = _root;
 
-        foreach (var letter in word) {
-            if (null == curr.children[letter - 'a']) {
+        foreach (char letter in word) {
+            if (!currNode.Children.ContainsKey(letter)) {
                 return false;
-            } else {
-                curr = curr.children[letter - 'a'];
             }
+            currNode = currNode.Children[letter];
         }
 
-        return curr.endOfWord;
+        return currNode.IsEnd;
     }
 
     /** Returns if there is any word in the trie that starts with the given prefix. */
-    public bool StartsWith(string prefix) {
-        var curr = root;
+    public bool StartsWith(string word) {
+        TrieNode currNode = _root;
 
-        foreach (var letter in prefix) {
-            if (null == curr.children[letter - 'a']) {
+        foreach (char letter in word) {
+            if (!currNode.Children.ContainsKey(letter)) {
                 return false;
-            } else {
-                curr = curr.children[letter - 'a'];
             }
+            currNode = currNode.Children[letter];
         }
 
         return true;
     }
 
-    private readonly TreeNode root = new TreeNode();
-
-    class TreeNode {
-        public TreeNode[] children = new TreeNode[26];
-        public bool endOfWord = false;
+    private class TrieNode {
+        public bool IsEnd {get; set;}
+        public Dictionary<char, TrieNode> Children {get;set;} = new Dictionary<char, TrieNode>();
     }
 }
 
