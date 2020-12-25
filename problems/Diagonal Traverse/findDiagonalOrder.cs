@@ -1,45 +1,37 @@
 public class Solution {
     public int[] FindDiagonalOrder(int[][] matrix) {
-        int n = matrix.Length;
-        if (n == 0)
-        {
+        if (0 == matrix.Length) {
             return new int[]{};
         }
 
-        int m = matrix[0].Length;
+        int rows = matrix.Length;
+        int cols = matrix[0].Length;
         List<List<int>> diagonals = new List<List<int>>();
+        List<int> result = new List<int>(rows * cols);
 
-        for (int j = 0; j < m + n; j++)
-        {
+        for (int j = 0; rows + cols > j; ++j) {
             int i = 0;
             int k = j;
 
-            if (j >= m)
-            {
-                k = m - 1;
-                i = j - m + 1;
+            if (cols <= j) {
+                k = cols - 1;
+                i = 1 + j - cols;
             }
 
             diagonals.Add(new List<int>());
-            while (i < n && k >= 0)
-            {
-                diagonals[diagonals.Count - 1].Add(matrix[i][k]);
-                i++;
-                k--;
+
+            while (rows > i && 0 <= k) {
+                diagonals[diagonals.Count - 1].Add(matrix[i++][k--]);
             }
         }
 
-        List<int> res = new List<int>(n*m);
-
-        for (int i = 0; i < diagonals.Count; i++)
-        {
-            if (i % 2 == 0)
-            {
+        for (int i = 0; diagonals.Count > i; ++i) {
+            if (0 == (i & 1)) {
                 diagonals[i].Reverse();
             }
-            res.AddRange(diagonals[i]);
+            result.AddRange(diagonals[i]);
         }
 
-        return res.ToArray();
+        return result.ToArray();
     }
 }
