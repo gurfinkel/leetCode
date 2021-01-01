@@ -1,41 +1,36 @@
 public class Solution {
     // Sliding Window + Hashmap
     public int LengthOfLongestSubstringKDistinct(string s, int k) {
-        int res = 0;
-        int l = 0;
-        int r = l;
-        Dictionary<char, int> char2Count = new Dictionary<char, int>();
+        Dictionary<char, int> store = new Dictionary<char, int>();
+        int result = 0;
+        int left = 0;
+        int right = 0;
 
-        while (l < s.Length)
-        {
-            if (char2Count.Count <= k)
-            {
-                res = Math.Max(res, r - l);
+        while (s.Length > left) {
+            if (store.Count <= k) {
+                result = Math.Max(result, right - left);
 
-                if (r == s.Length)
-                {
+                if (s.Length == right) {
                     break;
                 }
 
-                if (!char2Count.ContainsKey(s[r]))
-                {
-                    char2Count[s[r]] = 0;
+                if (!store.ContainsKey(s[right])) {
+                    store[s[right]] = 0;
                 }
 
-                char2Count[s[r]]++;
-                r++;
+                store[s[right++]]++;
                 continue;
             }
 
-            char2Count[s[l]]--;
-            if (char2Count[s[l]] == 0)
-            {
-                char2Count.Remove(s[l]);
+            --store[s[left]];
+
+            if (0 == store[s[left]]) {
+                store.Remove(s[left]);
             }
 
-            l++;
+            ++left;
         }
 
-        return res;
+        return result;
     }
 }
