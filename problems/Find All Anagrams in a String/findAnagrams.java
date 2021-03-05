@@ -1,22 +1,25 @@
 class Solution {
     public List<Integer> findAnagrams(String s, String p) {
-        int[] pLetterFrequencies = new int[26];
-        int[] sLetterFrequencies = new int[26];
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
+        int[] letterFrequencies = new int[26];
+        int letterCounter = 0;
+        int pSize = p.length();
 
         for (char letter : p.toCharArray()) {
-            ++pLetterFrequencies[letter - 'a'];
+            ++letterFrequencies[letter - 'a'];
         }
 
-        for (int i = 0; s.length() > i; ++i) {
-            ++sLetterFrequencies[s.charAt(i) - 'a'];
-
-            if (i >= p.length()) {
-                --sLetterFrequencies[s.charAt(i - p.length()) - 'a'];
+        for (int idx = 0; s.length() > idx; ++idx) {
+            if (0 < letterFrequencies[s.charAt(idx) - 'a']--) {
+                ++letterCounter;
             }
 
-            if (Arrays.equals(sLetterFrequencies, pLetterFrequencies)) {
-                result.add(1 + i - p.length());
+            if (pSize <= idx && 0 < ++letterFrequencies[s.charAt(idx - pSize) - 'a']) {
+                --letterCounter;
+            }
+
+            if (pSize == letterCounter) {
+                result.add(1 + idx - pSize);
             }
         }
 
