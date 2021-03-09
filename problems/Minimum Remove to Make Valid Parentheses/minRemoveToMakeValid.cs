@@ -1,32 +1,38 @@
 public class Solution {
     public string MinRemoveToMakeValid(string s) {
-        var indexesToRemove = new HashSet<int>();
-        var stack = new Stack<int>();
+        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        int openSeen = 0;
+        int balance = 0;
 
-        for (int i = 0; i < s.Length; i++) {
-            if (s[i] == '(') {
-                stack.Push(i);
-            } if (s[i] == ')') {
-                if (0 == stack.Count()) {
-                    indexesToRemove.Add(i);
-                } else {
-                    stack.Pop();
+        for (int idx = 0; s.Length > idx; ++idx) {
+            if ('(' == s[idx]) {
+                ++openSeen;
+                ++balance;
+            } else if (')' == s[idx]) {
+                if (0 == balance) {
+                    continue;
+                }
+                --balance;
+            }
+
+            sb.Append(s[idx]);
+        }
+
+        int openToKeep = openSeen - balance;
+
+        for (int idx = 0; sb.Length > idx; ++idx) {
+            if ('(' == sb[idx]) {
+                --openToKeep;
+
+                if (0 > openToKeep) {
+                    continue;
                 }
             }
+
+            result.Append(sb[idx]);
         }
 
-        // Put any indexes remaining on stack into the set.
-        while (0 < stack.Count())
-            indexesToRemove.Add(stack.Pop());
-
-        var sb = new StringBuilder();
-
-        for (int i = 0; i < s.Length; i++) {
-            if (!indexesToRemove.Contains(i)) {
-                sb.Append(s[i]);
-            }
-        }
-
-        return sb.ToString();
+        return result.ToString();
     }
 }
