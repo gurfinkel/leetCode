@@ -14,28 +14,28 @@
  * }
  */
 class Solution {
-    public int rangeSumBST(TreeNode root, int L, int R) {
-        List<Integer> inorder = new ArrayList<Integer>();
+    public int rangeSumBST(TreeNode root, int low, int high) {
         int result = 0;
+        Queue<TreeNode> bfs = new LinkedList<>();
 
-        fillInorder(root, inorder);
+        if (null != root) {
+            bfs.add(root);
+        }
 
-        for (int item : inorder) {
-            if (L <= item && R >= item) {
-                result += item;
+        while (!bfs.isEmpty()) {
+            TreeNode node = bfs.poll();
+
+            if (low <= node.val && high >= node.val) {
+                result += node.val;
+            }
+            if (low < node.val && null != node.left) {
+                bfs.add(node.left);
+            }
+            if (high > node.val && null != node.right) {
+                bfs.add(node.right);
             }
         }
 
         return result;
-    }
-
-    private void fillInorder(TreeNode node, List<Integer> inorder) {
-        if (null == node) {
-            return;
-        }
-
-        fillInorder(node.left, inorder);
-        inorder.add(node.val);
-        fillInorder(node.right, inorder);
     }
 }
