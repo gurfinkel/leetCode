@@ -1,19 +1,18 @@
 class Solution {
     public int[][] reconstructQueue(int[][] people) {
+        List<int[]> result = new LinkedList<>();
+
         Arrays.sort(people, new Comparator<int[]>() {
             @Override
-            public int compare(int[] o1, int[] o2) {
-                // if the heights are equal, compare k-values
-                return o1[0] == o2[0] ? o1[1] - o2[1] : o2[0] - o1[0];
+            public int compare(int[] a, int[] b) {
+                return a[0] == b[0] ? a[1] - b[1] : b[0] - a[0];
             }
         });
 
-        List<int[]> output = new LinkedList<>();
-        for(int[] p : people){
-            output.add(p[1], p);
+        for (int[] item : people) {
+            result.add(item[1], item);
         }
 
-        int n = people.length;
-        return output.toArray(new int[n][2]);
+        return result.toArray(new int[result.size()][2]);
     }
 }

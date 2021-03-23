@@ -1,14 +1,13 @@
 class Solution {
     public boolean isAlienSorted(String[] words, String order) {
         HashMap<Character, Integer> store = new HashMap<>();
-        int idx = 0;
 
-        for (char letter : order.toCharArray()) {
-            store.put(letter, idx++);
+        for (int idx = 0; order.length() > idx; ++idx) {
+            store.put(order.charAt(idx), idx);
         }
 
-        for (idx = 1; words.length > idx; ++idx) {
-            if (0 < compare(store, words[idx - 1], words[idx])) {
+        for (int idx = 1; words.length > idx; ++idx) {
+            if (0 > compare(words[idx - 1], words[idx], store)) {
                 return false;
             }
         }
@@ -16,7 +15,7 @@ class Solution {
         return true;
     }
 
-    private int compare(HashMap<Character, Integer> dict, String a, String b) {
+    private int compare(String a, String b, HashMap<Character, Integer> dict) {
         if (a.equals(b)) {
             return 0;
         }
@@ -27,10 +26,10 @@ class Solution {
             if (dict.get(a.charAt(idx)) == dict.get(b.charAt(idx))) {
                 ++idx;
             } else {
-                return dict.get(a.charAt(idx)) - dict.get(b.charAt(idx));
+                return dict.get(b.charAt(idx)) - dict.get(a.charAt(idx));
             }
         }
 
-        return a.length() - b.length();
+        return b.length() - a.length();
     }
 }
