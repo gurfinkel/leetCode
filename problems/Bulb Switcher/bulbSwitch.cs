@@ -1,17 +1,15 @@
 public class Solution {
     public int BulbSwitch(int n) {
-        if (n <= 1)
-        {
+        if (1 >= n) {
             return n;
         }
 
-        int res = 1;
+        int result = 1;
 
-        for (long i = 2; i * i <= n; i++)
-        {
-            res++;
+        for (long idx = 2; n >= idx * idx; ++idx) {
+            ++result;
         }
 
-        return res;
+        return result;
     }
 }

@@ -18,47 +18,49 @@
 public class Solution {
     public TreeNode SortedListToBST(ListNode head) {
         // Get the size of the linked list first
-    int size = this.findSize(head);
+        int size = this.findSize(head);
 
-    this.head = head;
+        this.head = head;
 
-    // Form the BST now that we know the size
-    return convertListToBST(0, size - 1);
+        // Form the BST now that we know the size
+        return convertListToBST(0, size - 1);
     }
 
     private ListNode head;
 
-  private int findSize(ListNode head) {
-    ListNode ptr = head;
-    int c = 0;
-    while (ptr != null) {
-      ptr = ptr.next;
-      c += 1;
-    }
-    return c;
-  }
+    private int findSize(ListNode head) {
+        ListNode ptr = head;
+        int c = 0;
 
-  private TreeNode convertListToBST(int l, int r) {
-    // Invalid case
-    if (l > r) {
-      return null;
+        while (ptr != null) {
+            ptr = ptr.next;
+            c += 1;
+        }
+
+        return c;
     }
 
-    int mid = (l + r) / 2;
+    private TreeNode convertListToBST(int l, int r) {
+        // Invalid case
+        if (l > r) {
+            return null;
+        }
 
-    // First step of simulated inorder traversal. Recursively form
-    // the left half
-    TreeNode left = this.convertListToBST(l, mid - 1);
+        int mid = (l + r) / 2;
 
-    // Once left half is traversed, process the current node
-    TreeNode node = new TreeNode(this.head.val);
-    node.left = left;
+        // First step of simulated inorder traversal. Recursively form
+        // the left half
+        TreeNode left = this.convertListToBST(l, mid - 1);
 
-    // Maintain the invariance mentioned in the algorithm
-    this.head = this.head.next;
+        // Once left half is traversed, process the current node
+        TreeNode node = new TreeNode(this.head.val);
+        node.left = left;
 
-    // Recurse on the right hand side and form BST out of them
-    node.right = this.convertListToBST(mid + 1, r);
-    return node;
-  }
+        // Maintain the invariance mentioned in the algorithm
+        this.head = this.head.next;
+
+        // Recurse on the right hand side and form BST out of them
+        node.right = this.convertListToBST(mid + 1, r);
+        return node;
+    }
 }
