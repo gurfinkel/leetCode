@@ -14,8 +14,15 @@ public class Codec {
         List<String> preOrder = new ArrayList<>();
 
         fillPreOrder(root, preOrder);
-        System.out.println(String.join(",", preOrder));
+
         return String.join(",", preOrder);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> preOrder = new LinkedList<>(Arrays.asList(data.split(",")));
+
+        return getTreeNode(preOrder);
     }
 
     private void fillPreOrder(TreeNode node, List<String> preOrder) {
@@ -26,13 +33,6 @@ public class Codec {
             fillPreOrder(node.left, preOrder);
             fillPreOrder(node.right, preOrder);
         }
-    }
-
-    // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
-        Queue<String> preOrder = new LinkedList<>(Arrays.asList(data.split(",")));
-
-        return getTreeNode(preOrder);
     }
 
     private TreeNode getTreeNode(Queue<String> preOrder) {
@@ -53,4 +53,6 @@ public class Codec {
 // Your Codec object will be instantiated and called as such:
 // Codec ser = new Codec();
 // Codec deser = new Codec();
-// TreeNode ans = deser.deserialize(ser.serialize(root));
+// String tree = ser.serialize(root);
+// TreeNode ans = deser.deserialize(tree);
+// return ans;
