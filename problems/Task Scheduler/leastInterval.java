@@ -8,13 +8,12 @@ class Solution {
 
         Arrays.sort(taskFrequencies);
 
-        int maxCoolingTimes = taskFrequencies[25] - 1;
-        int idleSlotsCount = maxCoolingTimes * n;
+        int idleSlotsCounter = n * (taskFrequencies[25] - 1);
 
-        for (int i = 24; 0 <= i; --i) {
-            idleSlotsCount -= Math.min(taskFrequencies[i], maxCoolingTimes);
+        for (int idx = 24; 0 <= idx; --idx) {
+            idleSlotsCounter -= Math.min(taskFrequencies[idx], taskFrequencies[25] - 1);
         }
 
-        return Math.max(0, idleSlotsCount) + tasks.length;
+        return tasks.length + Math.max(0, idleSlotsCounter);
     }
 }
