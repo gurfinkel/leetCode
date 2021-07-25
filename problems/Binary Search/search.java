@@ -1,8 +1,19 @@
 class Solution {
     public int search(int[] nums, int target) {
+        // return searchInBst(nums, target);
         // return binarySearchBasic(nums, target);
         // return binarySearchAdvanced(nums, target);
         return binarySearchWithNeighbors(nums, target);
+    }
+
+    private int searchInBst(int[] nums, int target) {
+        TreeMap<Integer, Integer> bst = new TreeMap<Integer, Integer>();
+
+        for (int idx = 0; nums.length > idx; ++idx) {
+            bst.put(nums[idx], idx);
+        }
+
+        return bst.containsKey(target) ? bst.get(target) : -1;
     }
 
     int binarySearchBasic(int[] nums, int target){
