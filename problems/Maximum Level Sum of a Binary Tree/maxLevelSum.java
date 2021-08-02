@@ -15,10 +15,10 @@
  */
 class Solution {
     public int maxLevelSum(TreeNode root) {
-        int result = 0;
         int maxSum = Integer.MIN_VALUE;
-        int level = 1;
-        Queue<TreeNode> bfs = new LinkedList<>();
+        int maxLevel = 0;
+        int level = 0;
+        Queue<TreeNode> bfs = new LinkedList<TreeNode>();
 
         if (null != root) {
             bfs.add(root);
@@ -27,6 +27,8 @@ class Solution {
         while (!bfs.isEmpty()) {
             int size = bfs.size();
             int sum = 0;
+
+            ++level;
 
             for (int idx = 0; size > idx; ++idx) {
                 TreeNode node = bfs.poll();
@@ -42,14 +44,12 @@ class Solution {
                 }
             }
 
-            if (sum > maxSum) {
-                result = level;
+            if (maxSum < sum) {
                 maxSum = sum;
+                maxLevel = level;
             }
-
-            ++level;
         }
 
-        return result;
+        return maxLevel;
     }
 }

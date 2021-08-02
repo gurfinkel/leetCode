@@ -7,7 +7,7 @@ public class Solution {
         var connectedComponentsCount = 0;
         var rows = grid.Length;
         var cols = grid[0].Length;
-        var dsu = new Dsu(1 + rows * cols);
+        var dsu = new DisjointSetUnion(1 + rows * cols);
 
         for (var row = 0; rows > row; ++row) {
             for (var col = 0; cols > col; ++col) {
@@ -33,11 +33,11 @@ public class Solution {
         return connectedComponentsCount;
     }
 
-    private class Dsu {
+    private class DisjointSetUnion {
         private readonly int[] _parents;
         private readonly int[] _ranks;
 
-        public Dsu(int n) {
+        public DisjointSetUnion(int n) {
             _parents = new int[n];
             _ranks = new int[n];
 
