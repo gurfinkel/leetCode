@@ -1,43 +1,40 @@
 class Solution {
     public List<String> removeInvalidParentheses(String s) {
-        Set<String> result = new HashSet<>();
+        HashSet<String> result = new HashSet<>();
 
-        backtrack(s, 0, 0, 0, new StringBuilder(), 0, result);
+        backtrack(s, 0, 0, 0, new StringBuilder(), result);
 
         return new ArrayList(result);
     }
 
-    private int minRemoved = Integer.MAX_VALUE;
-
-    private void backtrack(String s, int idx, int left, int right, StringBuilder sb, int removed, Set<String> result) {
+    private void backtrack(String s, int idx, int left, int right, StringBuilder sb, HashSet<String> result) {
         if (s.length() == idx) {
-            if (left == right && removed <= this.minRemoved) {
-                if (removed < this.minRemoved) {
-                    this.minRemoved = removed;
+            if (left == right) {
+                if (result.isEmpty() || sb.length() == result.iterator().next().length()) {
+                    result.add(sb.toString());
+                } else if (sb.length() > result.iterator().next().length()) {
                     result.clear();
+                    result.add(sb.toString());
                 }
-
-                result.add(sb.toString());
             }
         } else {
-            char letter = s.charAt(idx);
-            int len = sb.length();
+            char symbol = s.charAt(idx);
 
-            if ('(' != letter && ')' != letter) {
-                sb.append(letter);
-                backtrack(s, 1 + idx, left, right, sb, removed, result);
-                sb.deleteCharAt(len);
+            if ('(' != symbol && ')' != symbol) {
+                sb.append(symbol);
+                backtrack(s, 1 + idx, left, right, sb, result);
+                sb.deleteCharAt(sb.length() - 1);
             } else {
-                backtrack(s, 1 + idx, left, right, sb, 1 + removed, result);
-                sb.append(letter);
+                backtrack(s, 1 + idx, left, right, sb, result);
+                sb.append(symbol);
 
-                if ('(' == letter) {
-                    backtrack(s, 1 + idx, 1 + left, right, sb, removed, result);
+                if ('(' == symbol) {
+                    backtrack(s, 1 + idx, 1 + left, right, sb, result);
                 } else if (left > right) {
-                    backtrack(s, 1 + idx, left, 1 + right, sb, removed, result);
+                    backtrack(s, 1 + idx, left, 1 + right, sb, result);
                 }
 
-                sb.deleteCharAt(len);
+                sb.deleteCharAt(sb.length() - 1);
             }
         }
     }

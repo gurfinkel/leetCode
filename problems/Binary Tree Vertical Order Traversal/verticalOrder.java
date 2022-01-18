@@ -14,7 +14,7 @@
  * }
  */
 class Solution {
-    public List<List<Integer>> verticalTraversal(TreeNode root) {
+    public List<List<Integer>> verticalOrder(TreeNode root) {
         List<List<Integer>> result = new ArrayList<>();
         Queue<NodeAndCol> bfs = new LinkedList<>();
         HashMap<Integer, List<Integer>> store = new HashMap<>();
@@ -29,7 +29,6 @@ class Solution {
 
         while (!bfs.isEmpty()) {
             int size = bfs.size();
-            HashMap<Integer, List<Integer>> row = new HashMap<>();
 
             for (int idx = 0; size > idx; ++idx) {
                 NodeAndCol nodeAndCol = bfs.poll();
@@ -37,10 +36,6 @@ class Solution {
 
                 if (!store.containsKey(nodeAndCol.col)) {
                     store.put(nodeAndCol.col, new ArrayList<>());
-                }
-
-                if (!row.containsKey(nodeAndCol.col)) {
-                    row.put(nodeAndCol.col, new ArrayList<>());
                 }
 
                 if (null != node.left) {
@@ -53,17 +48,7 @@ class Solution {
 
                 maxCol = Math.max(maxCol, nodeAndCol.col);
                 minCol = Math.min(minCol, nodeAndCol.col);
-                row.get(nodeAndCol.col).add(node.val);
-            }
-
-            for (int key : row.keySet()) {
-                List<Integer> items = row.get(key);
-
-                Collections.sort(items);
-
-                for (int item : items) {
-                    store.get(key).add(item);
-                }
+                store.get(nodeAndCol.col).add(node.val);
             }
         }
 
