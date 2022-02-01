@@ -11,28 +11,23 @@ class Solution {
 
         s = s.trim();
 
-        int l = 0;
-        int r = s.length() - 1;
-
-        while (l <= r) {
-            char ch = s.charAt(l++);
-
-            if ('+' == ch || '-' == ch) {
+        for (char symbol : s.toCharArray()) {
+            if ('+' == symbol || '-' == symbol) {
                 if (number || sign) {
                     return false;
                 }
 
-                sign= true;
-            } else if ('0' <= ch && '9' >= ch) {
-                number= true;
-            } else if ('.' == ch) {
+                sign = true;
+            } else if ('0' <= symbol && '9' >= symbol) {
+                number = true;
+            } else if ('.' == symbol) {
                 if (decimal || exp) {
                     return false;
                 }
 
                 decimal = true;
                 sign = true;
-            } else if ('e' == ch || 'E' == ch) {
+            } else if ('e' == symbol || 'E' == symbol) {
                 if (exp || !number) {
                     return false;
                 }

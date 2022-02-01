@@ -1,31 +1,26 @@
 class Solution {
     public String minRemoveToMakeValid(String s) {
-        Stack<Integer> store = new Stack<>();
-        Set<Integer> itemsToRemove = new HashSet<>();
+        StringBuilder result = removeInvalidClosing(s, '(', ')');
+        result = removeInvalidClosing(result.reverse().toString(), ')', '(');
+
+        return result.reverse().toString();
+    }
+
+    private StringBuilder removeInvalidClosing(String str, char open, char close) {
         StringBuilder sb = new StringBuilder();
+        int balance = 0;
 
-        for (int idx = 0; s.length() > idx; ++idx) {
-            if ('(' == s.charAt(idx)) {
-                store.push(idx);
-            } else if (')' == s.charAt(idx)) {
-                if (store.isEmpty()) {
-                    itemsToRemove.add(idx);
-                } else {
-                    store.pop();
+        for (char symbol : str.toCharArray()) {
+            if (open == symbol) {
+                ++balance;
+            } if (close == symbol) {
+                if (balance == 0) {
+                    continue;
                 }
+                --balance;
             }
+            sb.append(symbol);
         }
-
-        while (!store.isEmpty()) {
-            itemsToRemove.add(store.pop());
-        }
-
-        for (int idx = 0; s.length() > idx; ++idx) {
-            if (!itemsToRemove.contains(idx)) {
-                sb.append(s.charAt(idx));
-            }
-        }
-
-        return sb.toString();
+        return sb;
     }
 }

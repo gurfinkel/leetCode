@@ -1,17 +1,17 @@
 class Solution {
-    public int minAddToMakeValid(String S) {
-        int result = 0;
-        int balanced = 0;
+    public int minAddToMakeValid(String s) {
+        int openCounter = 0;
+        int closeCounter = 0;
 
-        for (char item : S.toCharArray()) {
-            balanced += '(' == item ? 1 : -1;
+        for (char item : s.toCharArray()) {
+            closeCounter += '(' == item ? 1 : -1;
 
-            if (-1 == balanced) {
-                ++result;
-                ++balanced;
+            if (-1 == closeCounter) {
+                ++openCounter;
+                ++closeCounter;
             }
         }
 
-        return result + balanced;
+        return openCounter + closeCounter;
     }
 }
