@@ -1,14 +1,12 @@
 class Solution {
-    public String removeDuplicates(String S) {
+    public String removeDuplicates(String s) {
         StringBuilder sb = new StringBuilder();
-        int sbLength = 0;
 
-        for(char character : S.toCharArray()) {
-            if (0 != sbLength && character == sb.charAt(sbLength - 1)) {
-                sb.deleteCharAt(sbLength-- - 1);
+        for (char symbol : s.toCharArray()) {
+            if (!sb.isEmpty() && symbol == sb.charAt(sb.length() - 1)) {
+                sb.deleteCharAt(sb.length() - 1);
             } else {
-                sb.append(character);
-                ++sbLength;
+                sb.append(symbol);
             }
         }
 
