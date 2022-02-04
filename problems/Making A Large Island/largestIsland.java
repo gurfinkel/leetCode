@@ -1,60 +1,108 @@
 class Solution {
     public int largestIsland(int[][] grid) {
-        this.grid = grid;
-        N = grid.length;
+        int result = 0;
+        int n = grid.length;
+        Dsu dsu = new Dsu(n * n);
+        int zeros = n * n;
 
-        int index = 2;
-        int[] area = new int[N*N + 2];
-        for (int r = 0; r < N; ++r)
-            for (int c = 0; c < N; ++c)
-                if (grid[r][c] == 1)
-                    area[index] = dfs(r, c, index++);
-
-        int ans = 0;
-        for (int x: area) ans = Math.max(ans, x);
-        for (int r = 0; r < N; ++r)
-            for (int c = 0; c < N; ++c)
-                if (grid[r][c] == 0) {
-                    Set<Integer> seen = new HashSet();
-                    for (Integer move: neighbors(r, c))
-                        if (grid[move / N][move % N] > 1)
-                            seen.add(grid[move / N][move % N]);
-
-                    int bns = 1;
-                    for (int i: seen) bns += area[i];
-                    ans = Math.max(ans, bns);
+        for (int row = 0; n > row; ++row) {
+            for (int col = 0; n > col; ++col) {
+                if (1 == grid[row][col]) {
+                    if (0 < row && 1 == grid[row - 1][col]) {
+                        dsu.union(row * n + col, (row - 1) * n + col);
+                    }
+                    if (0 < col && 1 == grid[row][col - 1]) {
+                        dsu.union(row * n + col, row * n + col - 1);
+                    }
+                    --zeros;
                 }
-
-        return ans;
-    }
-
-    int[] dr = new int[]{-1, 0, 1, 0};
-    int[] dc = new int[]{0, -1, 0, 1};
-    int[][] grid;
-    int N;
-
-    int dfs(int r, int c, int index) {
-        int ans = 1;
-        grid[r][c] = index;
-        for (Integer move: neighbors(r, c)) {
-            if (grid[move / N][move % N] == 1) {
-                grid[move / N][move % N] = index;
-                ans += dfs(move / N, move % N, index);
             }
         }
 
-        return ans;
-    }
-
-    List<Integer> neighbors(int r, int c) {
-        List<Integer> ans = new ArrayList();
-        for (int k = 0; k < 4; ++k) {
-            int nr = r + dr[k];
-            int nc = c + dc[k];
-            if (0 <= nr && nr < N && 0 <= nc && nc < N)
-                ans.add(nr * N + nc);
+        if (0 == zeros) {
+            return n * n;
         }
 
-        return ans;
+        for (int row = 0; n > row; ++row) {
+            for (int col = 0; n > col; ++col) {
+                if (0 == grid[row][col]) {
+                    HashSet<Integer> visitedParents = new HashSet<>();
+                    int sum = 0;
+
+                    if (0 < row && 1 == grid[row - 1][col]) {
+                        int parent = dsu.find((row - 1) * n + col);
+
+                        sum += dsu.ranks[parent];
+                        visitedParents.add(parent);
+                    }
+                    if (0 < col && 1 == grid[row][col - 1]) {
+                        int parent = dsu.find(row * n + col - 1);
+
+                        if (!visitedParents.contains(parent)) {
+                            sum += dsu.ranks[parent];
+                            visitedParents.add(parent);
+                        }
+                    }
+                    if (n - 1 > row && 1 == grid[1 + row][col]) {
+                        int parent = dsu.find((1 + row) * n + col);
+
+                        if (!visitedParents.contains(parent)) {
+                            sum += dsu.ranks[parent];
+                            visitedParents.add(parent);
+                        }
+                    }
+                    if (n - 1 > col && 1 == grid[row][1 + col]) {
+                        int parent = dsu.find(row * n + 1 + col);
+
+                        if (!visitedParents.contains(parent)) {
+                            sum += dsu.ranks[parent];
+                            visitedParents.add(parent);
+                        }
+                    }
+
+                    result = Math.max(result, 1 + sum);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    class Dsu {
+        int[] parents;
+        int[] ranks;
+
+        Dsu(int n) {
+            parents = new int[n];
+            ranks = new int[n];
+
+            for (int idx = 0; n > idx; ++idx) {
+                parents[idx] = idx;
+                ranks[idx] = 1;
+            }
+        }
+
+        int find(int x) {
+            if (parents[x] != x) {
+                parents[x] = find(parents[x]);
+            }
+
+            return parents[x];
+        }
+
+        void union(int x, int y) {
+            int px = find(x);
+            int py = find(y);
+
+            if (px != py) {
+                if (ranks[px] > ranks[py]) {
+                    parents[py] = px;
+                    ranks[px] += ranks[py];
+                } else {
+                    parents[px] = py;
+                    ranks[py] += ranks[px];
+                }
+            }
+        }
     }
 }
