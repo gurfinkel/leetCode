@@ -1,15 +1,9 @@
 class Solution {
     public boolean isNumber(String s) {
-        if (null == s || 0 == s.length()) {
-            return false;
-        }
-
+        boolean decimal = false;
         boolean number = false;
         boolean sign = false;
-        boolean decimal = false;
         boolean exp = false;
-
-        s = s.trim();
 
         for (char symbol : s.toCharArray()) {
             if ('+' == symbol || '-' == symbol) {
