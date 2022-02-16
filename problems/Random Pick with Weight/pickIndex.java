@@ -1,44 +1,48 @@
 class Solution {
 
     public Solution(int[] w) {
-        _prefixSums = new int[1 + w.length];
+        int n = w.length;
 
-        for (int idx = 0; w.length > idx; ++idx) {
-            _prefixSums[1 + idx] = w[idx] + _prefixSums[idx];
+        prefixSums = new int[1 + n];
+
+        for (int idx = 0; n > idx; ++idx) {
+            prefixSums[1 + idx] = prefixSums[idx] + w[idx];
         }
     }
 
     public int pickIndex() {
         return pickIndexBinarySearch();
+        // return pickIndexLinearSearch();
+
     }
 
-    private int pickIndexBinarySearch() {
+    int pickIndexBinarySearch() {
         int min = 0;
-        int max = _prefixSums[_prefixSums.length - 1];
+        int max = prefixSums[prefixSums.length - 1];
         int target = min + (int)(Math.random() * (max - min));
         int left = 0;
-        int right = _prefixSums.length;
+        int right = prefixSums.length;
 
-        while (left < right) {
+        while (left + 1 < right) {
             int mid = left + ((right - left) >> 1);
 
-            if (target >= _prefixSums[mid]) {
-                left = 1 + mid;
+            if (target >= prefixSums[mid]) {
+                left = mid;
             } else {
                 right = mid;
             }
         }
 
-        return left - 1;
+        return left;
     }
 
-    private int pickIndexLinearSearch() {
+    int pickIndexLinearSearch() {
         int min = 0;
-        int max = _prefixSums[_prefixSums.length - 1];
+        int max = prefixSums[prefixSums.length - 1];
         int target = min + (int)(Math.random() * (max - min));
 
-        for (int idx = 0; _prefixSums.length >= idx; ++idx) {
-            if (target < _prefixSums[idx]) {
+        for (int idx = 0; prefixSums.length >= idx; ++idx) {
+            if (target < prefixSums[idx]) {
                 return idx - 1;
             }
         }
@@ -46,7 +50,7 @@ class Solution {
         return 0;
     }
 
-    private int[] _prefixSums;
+    int[] prefixSums;
 }
 
 /**
