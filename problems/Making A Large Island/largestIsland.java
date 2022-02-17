@@ -1,18 +1,24 @@
 class Solution {
     public int largestIsland(int[][] grid) {
         int result = 0;
-        int n = grid.length;
-        Dsu dsu = new Dsu(n * n);
-        int zeros = n * n;
+        int rows = grid.length;
+        int cols = grid[0].length;
+        Dsu dsu = new Dsu(rows * cols);
+        int zeros = rows * cols;
+        int[][] directions = new int[][] {{1,0},{0,1},{-1,0},{0,-1}};
 
-        for (int row = 0; n > row; ++row) {
-            for (int col = 0; n > col; ++col) {
+        for (int row = 0; rows > row; ++row) {
+            for (int col = 0; cols > col; ++col) {
                 if (1 == grid[row][col]) {
-                    if (0 < row && 1 == grid[row - 1][col]) {
-                        dsu.union(row * n + col, (row - 1) * n + col);
-                    }
-                    if (0 < col && 1 == grid[row][col - 1]) {
-                        dsu.union(row * n + col, row * n + col - 1);
+                    for (int idx = 0; 2 > idx; ++idx) {
+                        int newRow = row + directions[idx][0];
+                        int newCol = col + directions[idx][1];
+
+                        if (rows > newRow
+                            && cols > newCol
+                            && 1 == grid[newRow][newCol]) {
+                            dsu.union(row * cols + col, newRow * cols + newCol);
+                        }
                     }
                     --zeros;
                 }
@@ -20,47 +26,35 @@ class Solution {
         }
 
         if (0 == zeros) {
-            return n * n;
+            return rows * cols;
+        } else if (rows * cols == zeros) {
+            return 1;
         }
 
-        for (int row = 0; n > row; ++row) {
-            for (int col = 0; n > col; ++col) {
+        for (int row = 0; rows > row; ++row) {
+            for (int col = 0; cols > col; ++col) {
                 if (0 == grid[row][col]) {
-                    HashSet<Integer> visitedParents = new HashSet<>();
                     int sum = 0;
+                    HashSet<Integer> visitedParents = new HashSet<>();
 
-                    if (0 < row && 1 == grid[row - 1][col]) {
-                        int parent = dsu.find((row - 1) * n + col);
+                    for (int[] direction : directions) {
+                        int newRow = row + direction[0];
+                        int newCol = col + direction[1];
 
-                        sum += dsu.ranks[parent];
-                        visitedParents.add(parent);
-                    }
-                    if (0 < col && 1 == grid[row][col - 1]) {
-                        int parent = dsu.find(row * n + col - 1);
+                        if (0 <= newRow
+                            && 0 <= newCol
+                            && rows > newRow
+                            && cols > newCol
+                            && 1 == grid[newRow][newCol]) {
+                            int parentId = dsu.find(newRow * cols + newCol);
 
-                        if (!visitedParents.contains(parent)) {
-                            sum += dsu.ranks[parent];
-                            visitedParents.add(parent);
+                            if (!visitedParents.contains(parentId)) {
+                                sum += dsu.ranks[parentId];
+                                visitedParents.add(parentId);
+                                result = Math.max(result, 1 + sum);
+                            }
                         }
                     }
-                    if (n - 1 > row && 1 == grid[1 + row][col]) {
-                        int parent = dsu.find((1 + row) * n + col);
-
-                        if (!visitedParents.contains(parent)) {
-                            sum += dsu.ranks[parent];
-                            visitedParents.add(parent);
-                        }
-                    }
-                    if (n - 1 > col && 1 == grid[row][1 + col]) {
-                        int parent = dsu.find(row * n + 1 + col);
-
-                        if (!visitedParents.contains(parent)) {
-                            sum += dsu.ranks[parent];
-                            visitedParents.add(parent);
-                        }
-                    }
-
-                    result = Math.max(result, 1 + sum);
                 }
             }
         }
@@ -72,7 +66,7 @@ class Solution {
         int[] parents;
         int[] ranks;
 
-        Dsu(int n) {
+        public Dsu(int n) {
             parents = new int[n];
             ranks = new int[n];
 
@@ -82,25 +76,25 @@ class Solution {
             }
         }
 
-        int find(int x) {
-            if (parents[x] != x) {
-                parents[x] = find(parents[x]);
+        public int find(int a) {
+            if (parents[a] != a) {
+                parents[a] = find(parents[a]);
             }
 
-            return parents[x];
+            return parents[a];
         }
 
-        void union(int x, int y) {
-            int px = find(x);
-            int py = find(y);
+        public void union(int a, int b) {
+            int pa = find(a);
+            int pb = find(b);
 
-            if (px != py) {
-                if (ranks[px] > ranks[py]) {
-                    parents[py] = px;
-                    ranks[px] += ranks[py];
+            if (pa != pb) {
+                if (ranks[pa] > ranks[pb]) {
+                    parents[pb] = pa;
+                    ranks[pa] += ranks[pb];
                 } else {
-                    parents[px] = py;
-                    ranks[py] += ranks[px];
+                    parents[pa] = pb;
+                    ranks[pb] += ranks[pa];
                 }
             }
         }
