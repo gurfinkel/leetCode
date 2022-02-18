@@ -1,27 +1,22 @@
-import java.util.AbstractMap;
-
 class Solution {
     public int[][] kClosest(int[][] points, int k) {
-        PriorityQueue<Map.Entry<Integer, int[]>> store = new PriorityQueue<>((a, b)->b.getKey()-a.getKey());
-        int idx = 0;
-
-        for (int[] item : points) {
-            Map.Entry<Integer, int[]> entry =
-    new AbstractMap.SimpleEntry<Integer, int[]>(item[0]*item[0]+item[1]*item[1], item);
-
-            store.offer(entry);
-
-            if (k < store.size()) {
-                store.poll();
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a,b)->b[0]*b[0]+b[1]*b[1]-a[0]*a[0]-a[1]*a[1]);
+        
+        for (int[] point : points) {
+            maxHeap.add(point);
+            
+            if (k < maxHeap.size()) {
+                maxHeap.poll();
             }
         }
-
-        int[][] result = new int[store.size()][2];
-
-        while (!store.isEmpty()) {
-            result[idx++] = store.poll().getValue();
+        
+        int[][] result = new int[maxHeap.size()][2];
+        int idx = 0;
+        
+        while (!maxHeap.isEmpty()) {
+            result[idx++] = maxHeap.poll();
         }
-
+        
         return result;
     }
 }

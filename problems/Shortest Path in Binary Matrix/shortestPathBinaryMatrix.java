@@ -1,52 +1,43 @@
 class Solution {
     public int shortestPathBinaryMatrix(int[][] grid) {
+        int result = 0;
+        int rows = grid.length;
+        int cols = grid[0].length;
         Queue<int[]> bfs = new LinkedList<>();
+        int[][] directions = new int[][] {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};
 
-        if (0 == grid[0][0]) {
-            grid[0][0] = 1;
-            bfs.add(new int[]{0, 0});
+        if (0 != grid[0][0] || 0 != grid[rows - 1][cols - 1]) {
+            return -1;
         }
 
+        bfs.add(new int[]{0,0});
+        grid[0][0] = -1;
+
         while (!bfs.isEmpty()) {
-            int[] cell = bfs.poll();
-            int row = cell[0];
-            int col = cell[1];
-            int distance = grid[row][col];
+            ++result;
+            for (int idx = bfs.size(); 0 < idx; --idx) {
+                int[] items = bfs.poll();
+                int row = items[0];
+                int col = items[1];
 
-            if (row == grid.length - 1 && col == grid[0].length - 1) {
-                return distance;
-            }
+                if (rows == 1 + row && cols == 1 + col) {
+                    return result;
+                }
 
-            for (int[] neighbour : getNeighbours(row, col, grid)) {
-                int neighbourRow = neighbour[0];
-                int neighbourCol = neighbour[1];
+                for (int[] direction : directions) {
+                    int newRow = row + direction[0];
+                    int newCol = col + direction[1];
 
-                bfs.add(new int[]{neighbourRow, neighbourCol});
-                grid[neighbourRow][neighbourCol] = distance + 1;
+                    if (0 <= newRow && rows > newRow
+                       && 0 <= newCol && cols > newCol
+                       && 0 == grid[newRow][newCol]) {
+                        bfs.add(new int[] {newRow, newCol});
+                        grid[newRow][newCol] = -1;
+                    }
+                }
             }
         }
 
         return -1;
     }
-
-    private List<int[]> getNeighbours(int row, int col, int[][] grid) {
-        List<int[]> neighbours = new ArrayList<>();
-        int rows = grid.length;
-        int cols = grid[0].length;
-
-        for (int i = 0; i < directions.length; i++) {
-            int newRow = row + directions[i][0];
-            int newCol = col + directions[i][1];
-
-            if (0 > newRow || 0 > newCol || newRow >= rows || newCol >= cols
-                    || 0 != grid[newRow][newCol]) {
-                continue;
-            }
-
-            neighbours.add(new int[]{newRow, newCol});
-        }
-        return neighbours;
-    }
-
-    private int[][] directions = new int[][]{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 }

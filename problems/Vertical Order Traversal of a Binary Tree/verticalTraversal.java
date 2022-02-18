@@ -18,52 +18,43 @@ class Solution {
         List<List<Integer>> result = new ArrayList<>();
         Queue<NodeAndCol> bfs = new LinkedList<>();
         HashMap<Integer, List<Integer>> store = new HashMap<>();
-        int maxCol = 0;
-        int minCol = 0;
+        PriorityQueue<NodeAndCol> rowHeap = new PriorityQueue<>((a,b)->a.col == b.col ? a.node.val - b.node.val : a.col - b.col);
+        int maxCol = Integer.MIN_VALUE;
+        int minCol = Integer.MAX_VALUE;
 
-        if (null == root) {
-            return result;
-        } else {
+        if (null != root) {
             bfs.add(new NodeAndCol(root, 0));
         }
 
         while (!bfs.isEmpty()) {
-            int size = bfs.size();
-            HashMap<Integer, List<Integer>> row = new HashMap<>();
-
-            for (int idx = 0; size > idx; ++idx) {
+            for (int idx = bfs.size(); 0 < idx; --idx) {
                 NodeAndCol nodeAndCol = bfs.poll();
                 TreeNode node = nodeAndCol.node;
-
-                if (!store.containsKey(nodeAndCol.col)) {
-                    store.put(nodeAndCol.col, new ArrayList<>());
-                }
-
-                if (!row.containsKey(nodeAndCol.col)) {
-                    row.put(nodeAndCol.col, new ArrayList<>());
-                }
+                int col = nodeAndCol.col;
 
                 if (null != node.left) {
-                    bfs.add(new NodeAndCol(node.left, nodeAndCol.col - 1));
+                    bfs.add(new NodeAndCol(node.left, col - 1));
                 }
 
                 if (null != node.right) {
-                    bfs.add(new NodeAndCol(node.right, nodeAndCol.col + 1));
+                    bfs.add(new NodeAndCol(node.right, 1 + col));
                 }
 
-                maxCol = Math.max(maxCol, nodeAndCol.col);
-                minCol = Math.min(minCol, nodeAndCol.col);
-                row.get(nodeAndCol.col).add(node.val);
+                rowHeap.add(nodeAndCol);
+                maxCol = Math.max(maxCol, col);
+                minCol = Math.min(minCol, col);
             }
 
-            for (int key : row.keySet()) {
-                List<Integer> items = row.get(key);
+            while (!rowHeap.isEmpty()) {
+                NodeAndCol nodeAndCol = rowHeap.poll();
+                TreeNode node = nodeAndCol.node;
+                int col = nodeAndCol.col;
 
-                Collections.sort(items);
-
-                for (int item : items) {
-                    store.get(key).add(item);
+                if (!store.containsKey(col)) {
+                    store.put(col, new ArrayList<>());
                 }
+
+                store.get(col).add(node.val);
             }
         }
 
@@ -76,9 +67,9 @@ class Solution {
         return result;
     }
 
-    private class NodeAndCol {
-        public TreeNode node;
-        public int col;
+    class NodeAndCol {
+        TreeNode node;
+        int col;
 
         public NodeAndCol(TreeNode n, int c) {
             node = n;

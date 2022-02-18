@@ -1,42 +1,37 @@
 class Solution {
     public int shipWithinDays(int[] weights, int days) {
         int left = 0;
-        int right = 1;
+        int right = 0;
 
-        for (int weight : weights){
+        for (int weight : weights) {
             right += weight;
         }
 
-        while (left + 1 < right){
+        while (left + 1 < right) {
             int mid = left + (right - left) / 2;
-
-            if (canShip(weights, days, mid)) {
+            if (checkShipCapacity(weights, days, mid)) {
                 right = mid;
             } else {
                 left = mid;
             }
         }
 
-        if (canShip(weights, days, right)) {
-            return right;
-        }
-
-        return left;
+        return right;
     }
 
-    private boolean canShip(int[] weights, int days, int capacity) {
-        int remainCapacity = capacity;
+    boolean checkShipCapacity(int[] weights, int days, int shipCapacity) {
+        int capacity = shipCapacity;
 
         for (int weight : weights) {
-            if (weight <= remainCapacity) {
-                remainCapacity -= weight;
+            if (capacity >= weight) {
+                capacity -= weight;
             } else {
                 --days;
-                remainCapacity = capacity - weight;
+                capacity = shipCapacity - weight;
+            }
 
-                if (0 > remainCapacity || 0 == days) {
-                    return false;
-                }
+            if (0 > capacity || 0 == days) {
+                return false;
             }
         }
 
