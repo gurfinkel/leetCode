@@ -9,22 +9,23 @@ class Employee {
 
 class Solution {
     public int getImportance(List<Employee> employees, int id) {
-        Map<Integer, Employee> emap = new HashMap();
+        HashMap<Integer, Employee> store = new HashMap<>();
 
-        for (Employee e: employees) {
-            emap.put(e.id, e);
+        for (Employee employee: employees) {
+            store.put(employee.id, employee);
         }
 
-        return dfs(id, emap);
+        return dfs(id, store);
     }
-    public int dfs(int eid, Map<Integer, Employee> emap) {
-        Employee employee = emap.get(eid);
-        int ans = employee.importance;
 
-        for (Integer subid: employee.subordinates) {
-            ans += dfs(subid, emap);
+    public int dfs(int id, HashMap<Integer, Employee> store) {
+        Employee employee = store.get(id);
+        int result = employee.importance;
+
+        for (int childId : employee.subordinates) {
+            result += dfs(childId, store);
         }
 
-        return ans;
+        return result;
     }
 }
