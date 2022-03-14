@@ -15,8 +15,8 @@ class Node {
 
 class Solution {
     public Node copyRandomList(Node head) {
-        // return copyRandomListRecursive(head);
-        return copyRandomListIterative(head);
+        return copyRandomListRecursive(head);
+        // return copyRandomListIterative(head);
     }
 
     public Node copyRandomListIterative(Node head) {
@@ -24,6 +24,7 @@ class Solution {
             return null;
         }
 
+        HashMap<Node, Node> store = new HashMap<>();
         Node node = new Node(head.val);
         Node fakeHead = new Node(-1, node, null);
 
@@ -53,23 +54,34 @@ class Solution {
         return fakeHead.next;
     }
 
-    Node copyRandomListRecursive(Node head) {
+    public Node copyRandomListRecursive(Node head) {
         if (null == head) {
             return null;
         }
 
-        if (store.containsKey(head)) {
-            return store.get(head);
-        }
+        Node newHead = new Node(head.val);
+        HashMap<Node, Node> store = new HashMap<>();
 
-        Node node = new Node(head.val, null, null);
+        store.put(head, newHead);
+        newHead.next = dfs(head.next, store);
+        newHead.random = dfs(head.random, store);
 
-        store.put(head, node);
-        node.next = copyRandomListRecursive(head.next);
-        node.random = copyRandomListRecursive(head.random);
-
-        return node;
+        return newHead;
     }
 
-    HashMap<Node, Node> store = new HashMap<>();
+    Node dfs(Node node, HashMap<Node, Node> store) {
+        if (null == node) {
+            return null;
+        }
+
+        if (!store.containsKey(node)) {
+            Node newNode = new Node(node.val);
+
+            store.put(node, newNode);
+            newNode.next = dfs(node.next, store);
+            newNode.random = dfs(node.random, store);
+        }
+
+        return store.get(node);
+    }
 }
