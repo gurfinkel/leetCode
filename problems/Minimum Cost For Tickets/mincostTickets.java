@@ -1,31 +1,34 @@
 class Solution {
-    int[] days, costs;
-    Integer[] memo;
-    int[] durations = new int[]{1, 7, 30};
-
     public int mincostTickets(int[] days, int[] costs) {
-        this.days = days;
-        this.costs = costs;
-        memo = new Integer[days.length];
+        Integer[] memo = new Integer[days.length];
 
-        return dp(0);
+        return dp(0, days, costs, memo);
     }
 
-    public int dp(int i) {
-        if (i >= days.length)
+    public int dp(int idx, int[] days, int[] costs, Integer[] memo) {
+        if (days.length <= idx) {
             return 0;
-        if (memo[i] != null)
-            return memo[i];
-
-        int ans = Integer.MAX_VALUE;
-        int j = i;
-        for (int k = 0; k < 3; ++k) {
-            while (j < days.length && days[j] < days[i] + durations[k])
-                j++;
-            ans = Math.min(ans, dp(j) + costs[k]);
         }
 
-        memo[i] = ans;
+        if (null != memo[idx]) {
+            return memo[idx];
+        }
+
+
+        int[] durations = new int[]{1, 7, 30};
+        int ans = Integer.MAX_VALUE;
+        int i = idx;
+
+        for (int k = 0; 3 > k; ++k) {
+            while (i < days.length && days[i] < days[idx] + durations[k]) {
+                ++i;
+            }
+
+            ans = Math.min(ans, dp(i, days, costs, memo) + costs[k]);
+        }
+
+        memo[idx] = ans;
+
         return ans;
     }
 }
