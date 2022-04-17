@@ -15,27 +15,52 @@
  */
 class Solution {
     public TreeNode increasingBST(TreeNode root) {
-        List<Integer> inOrder = new ArrayList<>();
-        TreeNode fakeRoot = new TreeNode();
-        TreeNode currNode = fakeRoot;
-
-        fillInOrder(root, inOrder);
-
-        for (int val : inOrder) {
-            currNode.right = new TreeNode(val);
-            currNode = currNode.right;
-        }
-
-        return fakeRoot.right;
+        // return increasingBstDfs(root);
+        return increasingBstBfs(root);
     }
 
-    private void fillInOrder(TreeNode node, List<Integer> inOrder) {
+    TreeNode increasingBstBfs(TreeNode root) {
+        Stack<TreeNode> bfs = new Stack<>();
+        TreeNode fakeHead = new TreeNode();
+        TreeNode node = fakeHead;
+        TreeNode curr = root;
+
+        while (null != curr || !bfs.isEmpty()) {
+            while (null != curr) {
+                bfs.push(curr);
+                curr = curr.left;
+            }
+            curr = bfs.pop();
+            node.right = new TreeNode(curr.val);
+            node = node.right;
+            curr = curr.right;
+        }
+
+        return fakeHead.right;
+    }
+
+    TreeNode increasingBstDfs(TreeNode root) {
+        List<TreeNode> store = new ArrayList<>();
+        TreeNode fakeHead = new TreeNode();
+        TreeNode node = fakeHead;
+
+        inOrderDfs(root, store);
+
+        for (TreeNode item : store) {
+            node.right = new TreeNode(item.val);
+            node = node.right;
+        }
+
+        return fakeHead.right;
+    }
+
+    void inOrderDfs(TreeNode node, List<TreeNode> store) {
         if (null == node) {
             return;
         }
 
-        fillInOrder(node.left, inOrder);
-        inOrder.add(node.val);
-        fillInOrder(node.right, inOrder);
+        inOrderDfs(node.left, store);
+        store.add(node);
+        inOrderDfs(node.right, store);
     }
 }
