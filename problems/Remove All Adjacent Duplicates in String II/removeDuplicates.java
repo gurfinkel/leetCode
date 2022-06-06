@@ -11,7 +11,7 @@ class Solution {
 
                 if (k == count) {
                     sb.delete(1 + idx - k, 1 + idx);
-                    idx = idx - k;
+                    idx -= k;
                 } else {
                     store.push(count);
                 }
