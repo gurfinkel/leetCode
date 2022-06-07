@@ -2,12 +2,12 @@ class Solution {
     public void wallsAndGates(int[][] rooms) {
         int EMPTY = Integer.MAX_VALUE;
         int GATE = 0;
-        List<int[]> DIRECTIONS = Arrays.asList(
+        int[][] DIRECTIONS = new int[][] {
             new int[] { 1,  0},
             new int[] {-1,  0},
             new int[] { 0,  1},
             new int[] { 0, -1}
-        );
+        };
 
         int rows = rooms.length;
         if (0 == rows) {
