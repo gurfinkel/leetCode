@@ -1,18 +1,19 @@
 class Solution {
     public int[][] reconstructQueue(int[][] people) {
-        List<int[]> result = new LinkedList<>();
+        int n = people.length;
+        int[][] result = new int[n][2];
+        List<int[]> store = new ArrayList<>();
 
-        Arrays.sort(people, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] a, int[] b) {
-                return a[0] == b[0] ? a[1] - b[1] : b[0] - a[0];
-            }
-        });
+        Arrays.sort(people, (a, b)-> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);
 
-        for (int[] item : people) {
-            result.add(item[1], item);
+        for (int[] p : people){
+            store.add(p[1], p);
         }
 
-        return result.toArray(new int[result.size()][2]);
+        for (int idx = 0; n > idx; ++idx) {
+            result[idx] = store.get(idx);
+        }
+
+        return result;
     }
 }
