@@ -1,37 +1,31 @@
 class Solution {
     public int candy(int[] ratings) {
-        if (ratings.length <= 1) {
-            return ratings.length;
-        }
-        int candies = 0;
-        int up = 0;
-        int down = 0;
-        int oldSlope = 0;
-        for (int i = 1; i < ratings.length; i++) {
-            int newSlope = (ratings[i] > ratings[i - 1]) ? 1
-                : (ratings[i] < ratings[i - 1] ? -1
-                : 0);
+        int result = 0;
+        int n = ratings.length;
+        int[] store = new int[n];
 
-            if ((oldSlope > 0 && newSlope == 0) || (oldSlope < 0 && newSlope >= 0)) {
-                candies += count(up) + count(down) + Math.max(up, down);
-                up = 0;
-                down = 0;
-            }
-            if (newSlope > 0) {
-                up++;
-            } else if (newSlope < 0) {
-                down++;
-            } else {
-                candies++;
+        for (int idx = 0; n > idx; ++idx) {
+            store[idx] = 1;
+        }
+
+        for (int idx = 1; n > idx; ++idx) {
+            if (ratings[idx - 1] < ratings[idx] && store[idx - 1] >= store[idx]) {
+                store[idx] = 1 + store[idx - 1];
             }
 
-            oldSlope = newSlope;
         }
-        candies += count(up) + count(down) + Math.max(up, down) + 1;
-        return candies;
-    }
 
-    public int count(int n) {
-        return (n * (n + 1)) / 2;
+        for (int idx = n - 2; 0 <= idx; --idx) {
+            if (ratings[idx] > ratings[1 + idx] && store[idx] <= store[1 + idx]) {
+                store[idx] = 1 + store[1 + idx];
+            }
+
+        }
+
+        for (int item : store) {
+            result += item;
+        }
+
+        return result;
     }
 }
