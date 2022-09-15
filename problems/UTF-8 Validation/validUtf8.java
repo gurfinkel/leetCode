@@ -24,10 +24,10 @@ class Solution {
                     return false;
                 }
 
-                expectedByteCount--;
+                --expectedByteCount;
             }
         }
 
-        return expectedByteCount == 0;
+        return 0 == expectedByteCount;
     }
 }

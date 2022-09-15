@@ -27,7 +27,7 @@ class Solution {
             path = p.getValue();
 
             if (null != node) {
-                // compute occurences of each digit
+                // compute occurrences of each digit
                 // in the corresponding register
                 path = path ^ (1 << node.val);
                 // if it's a leaf check if the path is pseudo-palindromic
