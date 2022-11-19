@@ -1,25 +1,15 @@
 class Solution {
     public int change(int amount, int[] coins) {
-        Integer[][] dp = new Integer[coins.length][1 + amount];
+        int[] dp = new int[amount + 1];
 
-        return changeTopDown(amount, coins, dp, 0);
-    }
+        dp[0] = 1;
 
-    private int changeTopDown(int amount, int[] coins, Integer[][] dp, int idx) {
-        if (0 == amount) {
-            return 1;
+        for (int coin : coins) {
+            for (int item = coin; amount >= item; ++item) {
+                dp[item] += dp[item - coin];
+            }
         }
 
-        if (coins.length <= idx) {
-            return 0;
-        }
-
-        if (null == dp[idx][amount]) {
-            int sumWith = amount >= coins[idx] ? changeTopDown(amount-coins[idx], coins, dp, idx) : 0;
-            int sumWithout = changeTopDown(amount, coins, dp, 1 + idx);
-            dp[idx][amount] = sumWith + sumWithout;
-        }
-
-        return dp[idx][amount];
+        return dp[amount];
     }
 }

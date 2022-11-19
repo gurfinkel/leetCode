@@ -1,53 +1,52 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        Integer[][] dp = new Integer[1 + amount][coins.length];
-        int result = coinChangeTopDown(coins, dp, amount, 0);
-        // int result = coinChangeRecursive(coins, amount, 0);
-
-        return Integer.MAX_VALUE == result ? -1 : result;
+        // return coinChangeBfs(coins, amount);
+        return coinChangeBottomUp(coins, amount);
     }
 
-    private int coinChangeRecursive(int[] coins, int amount, int idx) {
-        if (0 == amount) {
-            return 0;
-        }
+    int coinChangeBottomUp(int[] coins, int amount) {
+        int[] dp = new int[1 + amount];
 
-        if (0 > amount || coins.length <= idx) {
-            return Integer.MAX_VALUE;
-        }
+        Arrays.fill(dp, 1 + amount);
+        dp[0] = 0;
 
-        int withCoin = Integer.MAX_VALUE;
-
-        if (amount >= coins[idx]) {
-            withCoin = coinChangeRecursive(coins, amount - coins[idx], idx);
-        }
-
-        int withoutCoin = coinChangeRecursive(coins, amount, 1 + idx);
-
-        return Math.min(Integer.MAX_VALUE == withCoin ? withCoin : 1 + withCoin, withoutCoin);
-    }
-
-    private int coinChangeTopDown(int[] coins, Integer[][] dp, int amount, int idx) {
-        if (0 == amount) {
-            return 0;
-        }
-
-        if (0 > amount || coins.length <= idx) {
-            return Integer.MAX_VALUE;
-        }
-
-        if (null == dp[amount][idx]) {
-            int withCoin = Integer.MAX_VALUE;
-
-            if (amount >= coins[idx]) {
-                withCoin = coinChangeTopDown(coins, dp, amount - coins[idx], idx);
+        for (int idx = 0; coins.length > idx; ++idx) {
+            for (int sum = coins[idx]; amount >= sum; ++sum) {
+                dp[sum] = Math.min(dp[sum], 1 + dp[sum - coins[idx]]);
             }
-
-            int withoutCoin = coinChangeTopDown(coins, dp, amount, 1 + idx);
-
-            dp[amount][idx] = Math.min(Integer.MAX_VALUE == withCoin ? withCoin : 1 + withCoin, withoutCoin);
         }
 
-        return dp[amount][idx];
+        return 1 + amount == dp[amount] ? -1 : dp[amount];
+    }
+
+    int coinChangeBfs(int[] coins, int amount) {
+        int result = 0;
+        Queue<Integer> bfs = new LinkedList<>();
+        HashSet<Integer> visited = new HashSet<>();
+
+        if (0 >= amount) {
+            return result;
+        }
+
+        bfs.add(amount);
+
+        while (!bfs.isEmpty()) {
+            ++result;
+
+            for (int idx = bfs.size(); 0 < idx; --idx) {
+                int item = bfs.poll();
+
+                for (int coin : coins) {
+                    if (item == coin) {
+                        return result;
+                    } else if (item > coin && !visited.contains(item - coin)) {
+                        bfs.add(item - coin);
+                        visited.add(item - coin);
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
 }
