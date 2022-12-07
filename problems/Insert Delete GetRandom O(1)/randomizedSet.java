@@ -1,15 +1,15 @@
 class RandomizedSet {
 
     public RandomizedSet() {
-        mapIdxToVal = new HashMap<>();
-        mapValToIdx = new HashMap<>();
+        idxToVal = new HashMap<>();
+        valToIdx = new HashMap<>();
         random = new Random();
     }
 
     public boolean insert(int val) {
-        if (!mapValToIdx.containsKey(val)) {
-            mapValToIdx.put(val, mapValToIdx.size());
-            mapIdxToVal.put(mapIdxToVal.size(), val);
+        if (!valToIdx.containsKey(val)) {
+            valToIdx.put(val, idxToVal.size());
+            idxToVal.put(idxToVal.size(), val);
 
             return true;
         }
@@ -18,15 +18,15 @@ class RandomizedSet {
     }
 
     public boolean remove(int val) {
-        if (mapValToIdx.containsKey(val)) {
-            int currIdx = mapValToIdx.get(val);
-            int lastIdx = mapIdxToVal.size() - 1;
-            int lastVal = mapIdxToVal.get(lastIdx);
+        if (valToIdx.containsKey(val)) {
+            int currIdx = valToIdx.get(val);
+            int lastIdx = valToIdx.size() - 1;
+            int lastVal = idxToVal.get(lastIdx);
 
-            mapIdxToVal.put(currIdx, lastVal);
-            mapValToIdx.put(lastVal, currIdx);
-            mapIdxToVal.remove(lastIdx);
-            mapValToIdx.remove(val);
+            idxToVal.put(currIdx, lastVal);
+            valToIdx.put(lastVal, currIdx);
+            idxToVal.remove(lastIdx);
+            valToIdx.remove(val);
 
             return true;
         }
@@ -35,11 +35,11 @@ class RandomizedSet {
     }
 
     public int getRandom() {
-        return mapIdxToVal.get(random.nextInt(mapIdxToVal.size()));
+        return idxToVal.get(random.nextInt(valToIdx.size()));
     }
 
-    private HashMap<Integer, Integer> mapIdxToVal;
-    private HashMap<Integer, Integer> mapValToIdx;
+    private HashMap<Integer, Integer> idxToVal;
+    private HashMap<Integer, Integer> valToIdx;
     private Random random;
 }
 
