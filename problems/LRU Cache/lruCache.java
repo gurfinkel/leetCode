@@ -1,62 +1,63 @@
 class LRUCache {
-    private int _capacity;
-    private HashMap<Integer, Node> _store;
-    private Node _head;
-    private Node _tail;
 
     public LRUCache(int capacity) {
-        _capacity = capacity;
-        _store = new HashMap<>();
-        _head = new Node();
-        _tail = new Node();
+        size = capacity;
+        store = new HashMap<>();
+        fakeHead = new Node();
+        fakeTail = new Node();
 
-        _head.next = _tail;
-        _tail.prev = _head;
+        fakeHead.next = fakeTail;
+        fakeTail.prev = fakeHead;
     }
 
     public int get(int key) {
-        if (!_store.containsKey(key)) {
+        if (!store.containsKey(key)) {
             return -1;
         }
 
-        Node node = _store.get(key);
+        Node node = store.get(key);
 
         remove(node);
-        insertAfter(node, _head);
+        insertAfter(node, fakeHead);
 
         return node.value;
     }
 
     public void put(int key, int value) {
-        if (_store.containsKey(key)) {
-            Node node = _store.get(key);
+        if (store.containsKey(key)) {
+            Node node = store.get(key);
 
             node.value = value;
             remove(node);
-            insertAfter(node, _head);
+            insertAfter(node, fakeHead);
         } else {
-            if (_capacity == _store.size()) {
-                _store.remove(_tail.prev.key);
-                remove(_tail.prev);
+            if (size == store.size()) {
+                store.remove(fakeTail.prev.key);
+                remove(fakeTail.prev);
             }
 
             Node node = new Node();
 
             node.key = key;
             node.value = value;
-            insertAfter(node, _head);
-            _store.put(key, node);
+            insertAfter(node, fakeHead);
+            store.put(key, node);
         }
     }
 
-    private class Node {
+    int size;
+    HashMap<Integer, Node> store;
+    Node fakeHead;
+    Node fakeTail;
+
+    class Node {
         public Node prev;
         public Node next;
         public int key;
         public int value;
     }
 
-    private void remove(Node node) {
+    void remove(Node node) {
         Node prev = node.prev;
         Node next = node.next;
 
@@ -64,13 +65,13 @@ class LRUCache {
         next.prev = prev;
     }
 
-    private void insertAfter(Node node, Node head) {
+    void insertAfter(Node node, Node head) {
         Node next = head.next;
 
         head.next = node;
         node.prev = head;
-        node.next = next;
         next.prev = node;
+        node.next = next;
     }
 }
 

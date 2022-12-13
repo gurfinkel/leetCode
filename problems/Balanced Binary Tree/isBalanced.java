@@ -15,22 +15,18 @@
  */
 class Solution {
     public boolean isBalanced(TreeNode root) {
-        // An empty tree satisfies the definition of a balanced tree
         if (null == root) {
             return true;
         }
 
-        // Check if subtrees have height within 1.
-        // If they do, check if the subtrees are balanced.
-        return 2 > Math.abs(height(root.left) - height(root.right)) && isBalanced(root.left) && isBalanced(root.right);
+        return 2 > Math.abs(getHeight(root.left)-getHeight(root.right)) && isBalanced(root.left) && isBalanced(root.right);
     }
 
-    private int height(TreeNode root) {
-        // An empty tree has height -1
+    int getHeight(TreeNode root) {
         if (null == root) {
-            return -1;
+            return 0;
         }
 
-        return 1 + Math.max(height(root.left), height(root.right));
+        return 1 + Math.max(getHeight(root.left), getHeight(root.right));
     }
-};
+}

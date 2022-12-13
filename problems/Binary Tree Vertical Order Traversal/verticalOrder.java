@@ -28,28 +28,25 @@ class Solution {
         }
 
         while (!bfs.isEmpty()) {
-            int size = bfs.size();
+            NodeAndCol nodeAndCol = bfs.poll();
+            TreeNode node = nodeAndCol.node;
+            int col = nodeAndCol.col;
 
-            for (int idx = 0; size > idx; ++idx) {
-                NodeAndCol nodeAndCol = bfs.poll();
-                TreeNode node = nodeAndCol.node;
-
-                if (!store.containsKey(nodeAndCol.col)) {
-                    store.put(nodeAndCol.col, new ArrayList<>());
-                }
-
-                if (null != node.left) {
-                    bfs.add(new NodeAndCol(node.left, nodeAndCol.col - 1));
-                }
-
-                if (null != node.right) {
-                    bfs.add(new NodeAndCol(node.right, nodeAndCol.col + 1));
-                }
-
-                maxCol = Math.max(maxCol, nodeAndCol.col);
-                minCol = Math.min(minCol, nodeAndCol.col);
-                store.get(nodeAndCol.col).add(node.val);
+            if (null != node.left) {
+                bfs.add(new NodeAndCol(node.left, col - 1));
             }
+
+            if (null != node.right) {
+                bfs.add(new NodeAndCol(node.right, 1 + col));
+            }
+
+            if (!store.containsKey(col)) {
+                store.put(col, new ArrayList<>());
+            }
+
+            minCol = Math.min(minCol, col);
+            maxCol = Math.max(maxCol, col);
+            store.get(col).add(node.val);
         }
 
         for (int col = minCol; maxCol >= col; ++col) {
@@ -61,7 +58,7 @@ class Solution {
         return result;
     }
 
-    private class NodeAndCol {
+    class NodeAndCol {
         public TreeNode node;
         public int col;
 

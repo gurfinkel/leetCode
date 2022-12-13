@@ -14,12 +14,13 @@ class Solution {
                 sb = new StringBuilder();
                 num = 0;
             } else if (']' == symbol) {
-                StringBuilder decodedSb = store.pop();
+                StringBuilder prevSb = store.pop();
 
                 for (int count = counters.pop(); 0 < count; --count) {
-                    decodedSb.append(sb);
+                    prevSb.append(sb);
                 }
-                sb = decodedSb;
+
+                sb = prevSb;
             } else {
                 sb.append(symbol);
             }
