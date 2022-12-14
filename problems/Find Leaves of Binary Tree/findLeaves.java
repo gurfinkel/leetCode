@@ -24,12 +24,12 @@ class Solution {
 
     int dfs(TreeNode node, List<List<Integer>> result) {
         if (null == node) {
-            return -1;
+            return 0;
         }
 
         int left = dfs(node.left, result);
         int right = dfs(node.right, result);
-        int currLevel = 1 + Math.max(left, right);
+        int currLevel = Math.max(left, right);
 
         if (currLevel == result.size()) {
             result.add(new ArrayList<>());
@@ -37,6 +37,6 @@ class Solution {
 
         result.get(currLevel).add(node.val);
 
-        return currLevel;
+        return 1 + currLevel;
     }
 }
