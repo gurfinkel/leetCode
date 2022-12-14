@@ -1,5 +1,6 @@
 class Solution {
     public int minFallingPathSum(int[][] matrix) {
+        int result = Integer.MAX_VALUE;
         int rows = matrix.length;
         int cols = matrix[0].length;
         int[][] dp = new int[rows][cols];
@@ -9,37 +10,29 @@ class Solution {
         }
 
         for (int col = 0; matrix[0].length > col; ++col) {
-            dfs(matrix, 0, col, 0, dp);
+            dfs(matrix, 0, col, dp);
         }
 
-        return minSum;
+        for (int col = 0; matrix[0].length > col; ++col) {
+            result = Math.min(result, dp[0][col]);
+        }
+
+        return result;
     }
 
-    int minSum = Integer.MAX_VALUE;
-
-    void dfs(int[][] matrix, int row, int col, int sum, int[][] dp) {
+    int dfs(int[][] matrix, int row, int col, int[][] dp) {
         if (matrix.length <= row) {
-            if (Integer.MAX_VALUE == minSum) {
-                minSum = sum;
-            } else {
-                minSum = Math.min(minSum, sum);
-            }
-
-            return;
+            return 0;
         }
 
-        if (0 > col || matrix[0].length <= col) {
-            return;
+        if (Integer.MAX_VALUE == dp[row][col]) {
+            int left = 0 < col ? dfs(matrix, 1 + row, col - 1, dp) : Integer.MAX_VALUE;
+            int mid = dfs(matrix, 1 + row, col, dp);
+            int right = matrix[0].length > 1 + col ? dfs(matrix, 1 + row, 1 + col, dp) : Integer.MAX_VALUE;
+
+            dp[row][col] = matrix[row][col] + Math.min(Math.min(left, right), mid);
         }
 
-        sum += matrix[row][col];
-
-        if (sum < dp[row][col]) {
-            dp[row][col] = sum;
-
-            dfs(matrix, 1 + row, col - 1, sum, dp);
-            dfs(matrix, 1 + row, col, sum, dp);
-            dfs(matrix, 1 + row, 1 + col, sum, dp);
-        }
+        return dp[row][col];
     }
 }
