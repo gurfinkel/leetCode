@@ -1,6 +1,6 @@
 class Solution {
     public int countComponents(int n, int[][] edges) {
-        int result = 0;
+        HashSet<Integer> store = new HashSet<>();
         Dsu dsu = new Dsu(n);
 
         for (int[] edge : edges) {
@@ -8,46 +8,43 @@ class Solution {
         }
 
         for (int idx = 0; n > idx; ++idx) {
-            if (idx == dsu.find(idx)) {
-                ++result;
-            }
+            store.add(dsu.find(idx));
         }
 
-        return result;
+        return store.size();
     }
 
     class Dsu {
-        private final int[] _parents;
-        private final int[] _ranks;
+        int[] parents;
+        int[] ranks;
 
         public Dsu(int n) {
-            _parents = new int[n];
-            _ranks = new int[n];
+            parents = new int[n];
+            ranks = new int[n];
 
             for (int idx = 0; n > idx; ++idx) {
-                _parents[idx] = idx;
+                parents[idx] = idx;
             }
         }
 
-        public int find(int x) {
-            if (x != _parents[x]) {
-                _parents[x] = find(_parents[x]);
+        public int find(int a) {
+            if (a != parents[a]) {
+                parents[a] = find(parents[a]);
             }
-
-            return _parents[x];
+            return parents[a];
         }
 
-        public void union(int x, int y) {
-            int px = find(x);
-            int py = find(y);
+        public void union(int a, int b) {
+            int pa = find(a);
+            int pb = find(b);
 
-            if (px != py) {
-                if (_ranks[px] > _ranks[py]) {
-                    _parents[py] = px;
-                    ++_ranks[px];
+            if (pa != pb) {
+                if (ranks[pa] > ranks[pb]) {
+                    parents[pa] = pb;
+                    ++ranks[pa];
                 } else {
-                    _parents[px] = py;
-                    ++_ranks[py];
+                    parents[pb] = pa;
+                    ++ranks[pb];
                 }
             }
         }
