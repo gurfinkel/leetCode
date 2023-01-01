@@ -1,57 +1,70 @@
 class Solution {
     public boolean possibleBipartition(int n, int[][] dislikes) {
         HashMap<Integer, List<Integer>> store = new HashMap<>();
-        int[] color = new int[1 + n];
+        Dsu dsu = new Dsu(1 + n);
 
-        for (int[] dislike : dislikes) {
-            int a = dislike[0];
-            int b = dislike[1];
-
-            if (!store.containsKey(a)) {
-                store.put(a, new ArrayList<>());
+        for (int[] edge : dislikes) {
+            if (!store.containsKey(edge[0])) {
+                store.put(edge[0], new ArrayList<>());
             }
 
-            if (!store.containsKey(b)) {
-                store.put(b, new ArrayList<>());
+            if (!store.containsKey(edge[1])) {
+                store.put(edge[1], new ArrayList<>());
             }
 
-            store.get(a).add(b);
-            store.get(b).add(a);
+            store.get(edge[0]).add(edge[1]);
+            store.get(edge[1]).add(edge[0]);
         }
 
-        for (int idx = 1; n >= idx; ++idx) {
-            if (0 == color[idx]) {
-                if (!bfs(idx, store, color)) {
+        for (int node = 1; n >= node; ++node) {
+            if (!store.containsKey(node)) {
+                continue;
+            }
+
+            for (int dislike : store.get(node)) {
+                if (dsu.find(node) == dsu.find(dislike)) {
                     return false;
                 }
+                dsu.union(store.get(node).get(0), dislike);
             }
         }
 
         return true;
     }
 
-    public boolean bfs(int idx, HashMap<Integer, List<Integer>> store, int[] color) {
-        Queue<Integer> bfs = new LinkedList<>();
+    class Dsu {
+        int[] parents;
+        int[] ranks;
 
-        bfs.add(idx);
-        color[idx] = 1;
+        public Dsu(int n) {
+            parents = new int[n];
+            ranks = new int[n];
 
-        while (!bfs.isEmpty()) {
-            int node = bfs.poll();
-
-            if (!store.containsKey(node)) {
-                continue;
+            for (int idx = 0; n > idx; ++idx) {
+                parents[idx] = idx;
             }
+        }
 
-            for (int neighbor : store.get(node)) {
-                if (1 == color[neighbor]) {
-                    return false;
-                } else if (0 == color[neighbor]) {
-                    color[neighbor] = 1;
-                    bfs.add(neighbor);
+        public int find(int a) {
+            if (a != parents[a]) {
+                parents[a] = find(parents[a]);
+            }
+            return parents[a];
+        }
+
+        public void union(int a, int b) {
+            int pa = find(a);
+            int pb = find(b);
+
+            if (pa != pb) {
+                if (ranks[pa] > ranks[pb]) {
+                    parents[pa] = pb;
+                    ++ranks[pa];
+                } else {
+                    parents[pb] = pa;
+                    ++ranks[pb];
                 }
             }
         }
-        return true;
     }
 }
