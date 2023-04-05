@@ -1,13 +1,13 @@
 class Solution {
-    public int shortestWordDistance(String[] words, String word1, String word2) {
-        int result = words.length;
+    public int shortestWordDistance(String[] wordsDict, String word1, String word2) {
+        int result = wordsDict.length;
         int idx1 = -1;
         int idx2 = -1;
         Boolean isFirstTurn = true;
 
-        for (int idx = 0; words.length > idx; ++idx) {
+        for (int idx = 0; wordsDict.length > idx; ++idx) {
             if (word1.equals(word2)) {
-                if (words[idx].equals(word1)) {
+                if (wordsDict[idx].equals(word1)) {
                     if (isFirstTurn) {
                         idx1 = idx;
                         isFirstTurn = false;
@@ -17,9 +17,9 @@ class Solution {
                     }
                 }
             } else {
-                if (words[idx].equals(word1)) {
+                if (wordsDict[idx].equals(word1)) {
                     idx1 = idx;
-                } else if (words[idx].equals(word2)) {
+                } else if (wordsDict[idx].equals(word2)) {
                     idx2 = idx;
                 }
             }
