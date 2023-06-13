@@ -1,16 +1,25 @@
 class Solution {
     public boolean checkStraightLine(int[][] coordinates) {
-        double a = (double)(coordinates[1][1]-coordinates[0][1])/(coordinates[1][0]-coordinates[0][0]);
+        int deltaY = getYDiff(coordinates[1], coordinates[0]);
+        int deltaX = getXDiff(coordinates[1], coordinates[0]);
 
-        for (int i = 2; coordinates.length > i; ++i) {
-            double x = coordinates[i][0];
-            double y = coordinates[i][1];
-
-            if (a != (y - coordinates[1][1]) / (x - coordinates[1][0])) {
+        for (int i = 2; i < coordinates.length; i++) {
+            // Check if the slope between points 0 and i, is the same as between 0 and 1.
+            if (deltaY * getXDiff(coordinates[i], coordinates[0])
+                != deltaX * getYDiff(coordinates[i], coordinates[0])) {
                 return false;
             }
         }
-
         return true;
+    }
+
+    // Returns the delta Y.
+    int getYDiff(int[] a, int[] b) {
+        return a[1] - b[1];
+    }
+
+    // Returns the delta X.
+    int getXDiff(int[] a, int[] b) {
+        return a[0] - b[0];
     }
 }
