@@ -14,13 +14,13 @@
  * }
  */
 class Solution {
-    int minDepth = Integer.MAX_VALUE;
-
     public int minDepth(TreeNode root) {
         dfs(root, 1);
 
         return Integer.MAX_VALUE == minDepth ? 0 : minDepth;
     }
+
+    private int minDepth = Integer.MAX_VALUE;
 
     private void dfs(TreeNode node, int depth) {
         if (null == node) {

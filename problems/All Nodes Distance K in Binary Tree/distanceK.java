@@ -8,7 +8,7 @@
  * }
  */
 class Solution {
-    public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
         List<Integer> result = new ArrayList<>();
         HashMap<TreeNode, TreeNode> parents = new HashMap<>();
         Queue<TreeNode> bfs = new LinkedList();
@@ -25,7 +25,7 @@ class Solution {
             for (int idx = 0; count > idx; ++idx) {
                 TreeNode node = bfs.poll();
 
-                if (K == dist) {
+                if (k == dist) {
                     result.add(node.val);
                 } else {
                     TreeNode parent = parents.get(node);
