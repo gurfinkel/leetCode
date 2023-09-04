@@ -1,18 +1,18 @@
 class Solution {
-    public String reorganizeString(String S) {
+    public String reorganizeString(String s) {
         StringBuilder sb = new StringBuilder();
         int[] letterFrequencies = new int[26];
         PriorityQueue<Letter> maxHeap = new PriorityQueue<>((a, b) ->
             a.frequency == b.frequency ?
                        a.symbol - b.symbol : b.frequency - a.frequency);
 
-        for (char letter : S.toCharArray()) {
+        for (char letter : s.toCharArray()) {
             ++letterFrequencies[letter -'a'];
         }
 
         for (int idx = 0; 26 > idx; ++idx) {
             if (0 < letterFrequencies[idx]) {
-                if (((S.length() + 1) >> 1) < letterFrequencies[idx]) {
+                if (((s.length() + 1) >> 1) < letterFrequencies[idx]) {
                     return "";
                 }
 
