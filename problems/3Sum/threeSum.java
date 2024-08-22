@@ -1,36 +1,39 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        HashSet<List<Integer>> result = new HashSet<List<Integer>>();
-        HashSet<String> store = new HashSet<String>();
-        HashSet<Integer> numsUnique = new HashSet<Integer>();
+        List<List<Integer>> result = new ArrayList<>();
+        HashSet<String> dedupSet = new HashSet<>();
 
-        for (int idx = 0; nums.length - 2 > idx; ++idx) {
-            if (numsUnique.add(nums[idx])) {
-                List<int[]> twoSumList = twoSum(nums, 1 + idx, -nums[idx]);
+        Arrays.sort(nums);
 
-                for (int[] item : twoSumList) {
-                    List<Integer> triplet = new ArrayList<Integer>();
-                    triplet.add(nums[idx]);
-                    triplet.add(nums[item[0]]);
-                    triplet.add(nums[item[1]]);
+        for (int idx = 0; nums.length > idx; ++idx) {
+            if (0 == idx || nums[idx - 1] != nums[idx]) {
+                List<int[]> twoSumList = twoSum(nums, -nums[idx], 1 + idx);
 
-                    Collections.sort(triplet);
+                for (int[] twoSumItem : twoSumList) {
+                    String key = "" + nums[idx] + nums[twoSumItem[0]] + nums[twoSumItem[1]];
 
-                    result.add(triplet);
+                    if (!dedupSet.contains(key)) {
+                        List<Integer> threeSumItem = new ArrayList<>();
+                        threeSumItem.add(nums[idx]);
+                        threeSumItem.add(nums[twoSumItem[0]]);
+                        threeSumItem.add(nums[twoSumItem[1]]);
+                        result.add(threeSumItem);
+                        dedupSet.add(key);
+                    }
                 }
             }
         }
 
-        return new ArrayList<List<Integer>>(result);
+        return result;
     }
 
-    private List<int[]> twoSum(int[] nums, int start, int target) {
-        List<int[]> result = new ArrayList<int[]>();
-        HashMap<Integer, Integer> store = new HashMap<Integer, Integer>();
+    public List<int[]> twoSum(int[] nums, int k, int start) {
+        List<int[]> result = new ArrayList<>();
+        HashMap<Integer, Integer> store = new HashMap<>();
 
         for (int idx = start; nums.length > idx; ++idx) {
-            if (store.containsKey(target - nums[idx])) {
-                result.add(new int[] {store.get(target - nums[idx]), idx});
+            if (store.containsKey(k - nums[idx])) {
+                result.add(new int[] {store.get(k - nums[idx]), idx});
             }
 
             store.put(nums[idx], idx);

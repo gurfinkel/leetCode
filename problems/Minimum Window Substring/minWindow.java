@@ -8,19 +8,24 @@ class Solution {
         }
 
         for (int left = 0, right = 0, count = 0; s.length() > right; ++right) {
-            char letter = s.charAt(right);
+            --letterFrequencies[s.charAt(right) - 'A'];
 
-            if (0 < letterFrequencies[letter - 'A']--) {
+            if (0 <= letterFrequencies[s.charAt(right) - 'A']) {
                 ++count;
             }
 
             while (t.length() == count) {
-                if (0 == result.length() || result.length() > 1 + right - left) {
+                if (result.isEmpty() || result.length() > 1 + right - left) {
                     result = s.substring(left, 1 + right);
                 }
-                if (0 < ++letterFrequencies[s.charAt(left++) - 'A']) {
+
+                ++letterFrequencies[s.charAt(left) - 'A'];
+                
+                if (0 < letterFrequencies[s.charAt(left) - 'A']) {
                     --count;
                 }
+
+                ++left;
             }
         }
 

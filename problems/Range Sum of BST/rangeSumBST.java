@@ -28,10 +28,12 @@ class Solution {
             if (low <= node.val && high >= node.val) {
                 result += node.val;
             }
-            if (low < node.val && null != node.left) {
+
+            if (null != node.left && low < node.val) {
                 bfs.add(node.left);
             }
-            if (high > node.val && null != node.right) {
+
+            if (null != node.right && high > node.val) {
                 bfs.add(node.right);
             }
         }
