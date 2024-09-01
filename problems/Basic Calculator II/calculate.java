@@ -1,37 +1,41 @@
 class Solution {
     public int calculate(String s) {
-        if (s == null || s.isEmpty()) return 0;
-        int len = s.length();
-        Stack<Integer> stack = new Stack<Integer>();
-        int currentNumber = 0;
-        char operation = '+';
-
-        for (int i = 0; i < len; i++) {
-            char currentChar = s.charAt(i);
-            if (Character.isDigit(currentChar)) {
-                currentNumber = (currentNumber * 10) + (currentChar - '0');
-            }
-            if (!Character.isDigit(currentChar) && !Character.isWhitespace(currentChar) || i == len - 1) {
-                if (operation == '-') {
-                    stack.push(-currentNumber);
-                }
-                else if (operation == '+') {
-                    stack.push(currentNumber);
-                }
-                else if (operation == '*') {
-                    stack.push(stack.pop() * currentNumber);
-                }
-                else if (operation == '/') {
-                    stack.push(stack.pop() / currentNumber);
-                }
-                operation = currentChar;
-                currentNumber = 0;
-            }
-        }
         int result = 0;
-        while (!stack.isEmpty()) {
-            result += stack.pop();
+
+        if (null == s || 0 == s.length()) {
+            return result;
         }
+
+        Stack<Integer> store = new Stack<>();
+        int currNumber = 0;
+        int currOperator = '+';
+
+        for (int idx = 0; s.length() > idx; ++idx) {
+            char symbol = s.charAt(idx);
+
+            if (Character.isDigit(symbol)) {
+                currNumber = (10 * currNumber) + (symbol - '0');
+            } 
+            if ((!Character.isDigit(symbol) && !Character.isWhitespace(symbol)) || s.length() == 1 + idx) {
+                if ('+' == currOperator) {
+                    store.push(currNumber);
+                } else if ('-' == currOperator) {
+                    store.push(-currNumber);
+                } else if ('*' == currOperator) {
+                    store.push(store.pop() * currNumber);
+                } else if ('/' == currOperator) {
+                    store.push(store.pop() / currNumber);
+                }
+
+                currOperator = symbol;
+                currNumber = 0;
+            }
+        }
+
+        while (!store.isEmpty()) {
+            result += store.pop();
+        }
+
         return result;
     }
 }
