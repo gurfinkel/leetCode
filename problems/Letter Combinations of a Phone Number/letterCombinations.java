@@ -1,37 +1,36 @@
 class Solution {
     public List<String> letterCombinations(String digits) {
-        // If the input is empty, immediately return an empty answer array
-        if (digits.length() == 0) {
-            return combinations;
-        }
+        List<String> result = new ArrayList<>();
+        HashMap<Character, String> digitToLettersMap = new HashMap<>();
+        
+        digitToLettersMap.put('2', "abc");
+        digitToLettersMap.put('3', "def");
+        digitToLettersMap.put('4', "ghi");
+        digitToLettersMap.put('5', "jkl");
+        digitToLettersMap.put('6', "mno");
+        digitToLettersMap.put('7', "pqrs");
+        digitToLettersMap.put('8', "tuv");
+        digitToLettersMap.put('9', "wxyz");
+        
+        backtrack(digits, digitToLettersMap, 0, result, new StringBuilder());
 
-        // Initiate backtracking with an empty path and starting index of 0
-        phoneDigits = digits;
-        backtrack(0, new StringBuilder());
-        return combinations;
+        return result;
     }
 
-    private List<String> combinations = new ArrayList<>();
-    private Map<Character, String> letters = Map.of(
-        '2', "abc", '3', "def", '4', "ghi", '5', "jkl",
-        '6', "mno", '7', "pqrs", '8', "tuv", '9', "wxyz");
-    private String phoneDigits;
-
-    private void backtrack(int index, StringBuilder path) {
-        // If the path is the same length as digits, we have a complete combination
-        if (path.length() == phoneDigits.length()) {
-            combinations.add(path.toString());
-            return; // Backtrack
+    private void backtrack(String digits, HashMap<Character, String> digitToLettersMap, int idx, List<String> result, StringBuilder path) {
+        if (digits.length() == path.length()) {
+            if (0 < path.length()) {
+                result.add(path.toString());
+            }
+            
+            return;
         }
 
-        // Get the letters that the current digit maps to, and loop through them
-        String possibleLetters = letters.get(phoneDigits.charAt(index));
-        for (char letter: possibleLetters.toCharArray()) {
-            // Add the letter to our current path
+        String letters = digitToLettersMap.get(digits.charAt(idx));
+
+        for (char letter : letters.toCharArray()) {
             path.append(letter);
-            // Move on to the next digit
-            backtrack(index + 1, path);
-            // Backtrack by removing the letter before moving onto the next
+            backtrack(digits, digitToLettersMap, 1 + idx, result, path);
             path.deleteCharAt(path.length() - 1);
         }
     }

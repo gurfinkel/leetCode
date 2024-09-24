@@ -1,5 +1,30 @@
 class Solution {
     public int subarraySum(int[] nums, int k) {
+        return subarraySumOn1(nums, k);
+        // return subarraySumOn2(nums, k);
+    }
+
+    private int subarraySumOn1(int[] nums, int k) {
+        int result = 0;
+        int sum = 0;
+        HashMap<Integer, Integer> prefixSumToCount = new HashMap<>();
+
+        prefixSumToCount.put(0, 1);
+
+        for (int num : nums) {
+            sum += num;
+
+            if (prefixSumToCount.containsKey(sum - k)) {
+                result += prefixSumToCount.get(sum - k);
+            }
+
+            prefixSumToCount.put(sum, 1 + prefixSumToCount.getOrDefault(sum, 0));
+        }
+
+        return result;
+    }
+
+    private int subarraySumOn2(int[] nums, int k) {
         int result = 0;
         int n = nums.length;
         int[] prefixSums = new int[1 + n];

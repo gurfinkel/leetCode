@@ -1,14 +1,14 @@
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-        HashMap<Integer, Integer> store = new HashMap<>();
+        HashMap<Integer, Integer> valueToFrequency = new HashMap<>();
 
         for (int num : nums) {
-            store.put(num, 1 + store.getOrDefault(num, 0));
+            valueToFrequency.put(num, 1 + valueToFrequency.getOrDefault(num, 0));
         }
 
-        for (int key : store.keySet()) {
-            minHeap.add(new int[] {key, store.get(key)});
+        for (int key : valueToFrequency.keySet()) {
+            minHeap.add(new int[] {key, valueToFrequency.get(key)});
 
             if (k < minHeap.size()) {
                 minHeap.poll();

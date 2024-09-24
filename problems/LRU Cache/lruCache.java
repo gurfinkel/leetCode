@@ -2,37 +2,37 @@ class LRUCache {
 
     public LRUCache(int capacity) {
         size = capacity;
-        store = new HashMap<>();
+        keyToNodeMap = new HashMap<>();
         fakeHead = new Node();
         fakeTail = new Node();
 
         fakeHead.next = fakeTail;
         fakeTail.prev = fakeHead;
     }
-
+    
     public int get(int key) {
-        if (!store.containsKey(key)) {
+        if (!keyToNodeMap.containsKey(key)) {
             return -1;
         }
-
-        Node node = store.get(key);
+        
+        Node node = keyToNodeMap.get(key);
 
         remove(node);
         insertAfter(node, fakeHead);
 
         return node.value;
     }
-
+    
     public void put(int key, int value) {
-        if (store.containsKey(key)) {
-            Node node = store.get(key);
+        if (keyToNodeMap.containsKey(key)) {
+            Node node = keyToNodeMap.get(key);
 
             node.value = value;
             remove(node);
             insertAfter(node, fakeHead);
         } else {
-            if (size == store.size()) {
-                store.remove(fakeTail.prev.key);
+            if (size == keyToNodeMap.size()) {
+                keyToNodeMap.remove(fakeTail.prev.key);
                 remove(fakeTail.prev);
             }
 
@@ -41,37 +41,37 @@ class LRUCache {
             node.key = key;
             node.value = value;
             insertAfter(node, fakeHead);
-            store.put(key, node);
+            keyToNodeMap.put(key, node);
         }
     }
 
     int size;
-    HashMap<Integer, Node> store;
+    HashMap<Integer, Node> keyToNodeMap;
     Node fakeHead;
     Node fakeTail;
 
     class Node {
-        public Node prev;
-        public Node next;
-        public int key;
-        public int value;
+        Node prev;
+        Node next;
+        int key;
+        int value;
+    }
+
+    void insertAfter(Node node, Node head) {
+        Node next = head.next;
+        
+        head.next = node;
+        node.prev = head;
+        node.next = next;
+        next.prev = node;
     }
 
     void remove(Node node) {
         Node prev = node.prev;
         Node next = node.next;
 
-        prev.next = next;
         next.prev = prev;
-    }
-
-    void insertAfter(Node node, Node head) {
-        Node next = head.next;
-
-        head.next = node;
-        node.prev = head;
-        next.prev = node;
-        node.next = next;
+        prev.next = next;
     }
 }
 

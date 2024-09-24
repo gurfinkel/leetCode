@@ -4,9 +4,9 @@ class Solution {
         int right = nums.length;
 
         while (left + 1 < right) {
-            int mid = (right + left) / 2;
+            int mid = left + (right - left) / 2;
 
-            if (0 <= mid && nums[mid - 1] < nums[mid] && mid + 1 < nums.length && nums[mid + 1] < nums[mid]) {
+            if (0 < mid && nums.length > 1 + mid && nums[mid - 1] < nums[mid] && nums[mid] > nums[1 + mid]) {
                 return mid;
             } else if (nums[mid - 1] < nums[mid]) {
                 left = mid;

@@ -1,39 +1,39 @@
 class Solution {
     public boolean isNumber(String s) {
-        boolean decimal = false;
-        boolean number = false;
-        boolean sign = false;
-        boolean exp = false;
+        boolean isSeenDot = false;
+        boolean isSeenDigit = false;
+        boolean isSeenSign = false;
+        boolean isSeenExp = false;
 
         for (char symbol : s.toCharArray()) {
             if ('+' == symbol || '-' == symbol) {
-                if (number || sign) {
+                if (isSeenDigit || isSeenSign) {
                     return false;
                 }
 
-                sign = true;
+                isSeenSign = true;
             } else if ('0' <= symbol && '9' >= symbol) {
-                number = true;
+                isSeenDigit = true;
             } else if ('.' == symbol) {
-                if (decimal || exp) {
+                if (isSeenDot || isSeenExp) {
                     return false;
                 }
 
-                decimal = true;
-                sign = true;
+                isSeenDot = true;
+                isSeenSign = true;
             } else if ('e' == symbol || 'E' == symbol) {
-                if (exp || !number) {
+                if (isSeenExp || !isSeenDigit) {
                     return false;
                 }
 
-                exp = true;
-                sign = false;
-                number = false;
+                isSeenExp = true;
+                isSeenSign = false;
+                isSeenDigit = false;
             } else {
                 return false;
             }
         }
 
-        return number;
+        return isSeenDigit;
     }
 }

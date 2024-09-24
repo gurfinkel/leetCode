@@ -15,8 +15,8 @@ class Node {
 
 class Solution {
     public Node copyRandomList(Node head) {
-        return copyRandomListRecursive(head);
-        // return copyRandomListIterative(head);
+        // return copyRandomListRecursive(head);
+        return copyRandomListIterative(head);
     }
 
     public Node copyRandomListIterative(Node head) {
@@ -24,27 +24,27 @@ class Solution {
             return null;
         }
 
-        HashMap<Node, Node> store = new HashMap<>();
+        HashMap<Node, Node> oldNodeToNewNodeMap = new HashMap<>();
         Node node = new Node(head.val);
         Node fakeHead = new Node(-1, node, null);
 
-        store.put(head, node);
+        oldNodeToNewNodeMap.put(head, node);
 
         while (null != head) {
             if (null != head.random) {
-                if (!store.containsKey(head.random)) {
-                    store.put(head.random, new Node(head.random.val, null, null));
+                if (!oldNodeToNewNodeMap.containsKey(head.random)) {
+                    oldNodeToNewNodeMap.put(head.random, new Node(head.random.val, null, null));
                 }
 
-                node.random = store.get(head.random);
+                node.random = oldNodeToNewNodeMap.get(head.random);
             }
 
             if (null != head.next) {
-                if (!store.containsKey(head.next)) {
-                    store.put(head.next, new Node(head.next.val, null, null));
+                if (!oldNodeToNewNodeMap.containsKey(head.next)) {
+                    oldNodeToNewNodeMap.put(head.next, new Node(head.next.val, null, null));
                 }
 
-                node.next = store.get(head.next);
+                node.next = oldNodeToNewNodeMap.get(head.next);
             }
 
             node = node.next;
@@ -60,28 +60,28 @@ class Solution {
         }
 
         Node newHead = new Node(head.val);
-        HashMap<Node, Node> store = new HashMap<>();
+        HashMap<Node, Node> oldNodeToNewNodeMap = new HashMap<>();
 
-        store.put(head, newHead);
-        newHead.next = dfs(head.next, store);
-        newHead.random = dfs(head.random, store);
+        oldNodeToNewNodeMap.put(head, newHead);
+        newHead.next = dfs(head.next, oldNodeToNewNodeMap);
+        newHead.random = dfs(head.random, oldNodeToNewNodeMap);
 
         return newHead;
     }
 
-    Node dfs(Node node, HashMap<Node, Node> store) {
+    Node dfs(Node node, HashMap<Node, Node> oldNodeToNewNodeMap) {
         if (null == node) {
             return null;
         }
 
-        if (!store.containsKey(node)) {
+        if (!oldNodeToNewNodeMap.containsKey(node)) {
             Node newNode = new Node(node.val);
 
-            store.put(node, newNode);
-            newNode.next = dfs(node.next, store);
-            newNode.random = dfs(node.random, store);
+            oldNodeToNewNodeMap.put(node, newNode);
+            newNode.next = dfs(node.next, oldNodeToNewNodeMap);
+            newNode.random = dfs(node.random, oldNodeToNewNodeMap);
         }
 
-        return store.get(node);
+        return oldNodeToNewNodeMap.get(node);
     }
 }
