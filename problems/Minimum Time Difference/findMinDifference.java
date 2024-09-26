@@ -1,21 +1,28 @@
 class Solution {
     public int findMinDifference(List<String> timePoints) {
-        Set<Integer> dup = new HashSet<Integer>();
+        HashSet<Integer> store = new HashSet<>();
         int[] timeInMins = new int[timePoints.size()];
-        for (int i=0; i<timeInMins.length; i++)
-        {
-            String time = timePoints.get(i);
-            int min = Integer.parseInt(time.substring(0,2))*60 + Integer.parseInt(time.substring(3));
-            if (!dup.add(min))
+
+        for (int idx = 0; timeInMins.length > idx; ++idx) {
+            String timePoint = timePoints.get(idx);
+            int time = 60 * Integer.parseInt(timePoint.substring(0, 2)) + Integer.parseInt(timePoint.substring(3));
+
+            if (store.contains(time)) {
                 return 0;
-            timeInMins[i] = min;
+            }
+
+            store.add(time);
+            timeInMins[idx] = time;
         }
+
         Arrays.sort(timeInMins);
-        int result = timeInMins[0]+24*60 - timeInMins[timeInMins.length-1];
-        for (int i=0; i<timeInMins.length-1; i++)
-        {
-            result = Math.min(result, timeInMins[i+1]-timeInMins[i]);
+
+        int result = 24*60 + timeInMins[0] - timeInMins[timeInMins.length - 1];
+
+        for (int idx = 1; timeInMins.length > idx; ++idx) {
+            result = Math.min(result, timeInMins[idx] - timeInMins[idx - 1]);
         }
+
         return result;
     }
 }

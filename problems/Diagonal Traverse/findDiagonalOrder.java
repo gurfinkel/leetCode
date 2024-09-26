@@ -4,27 +4,36 @@ class Solution {
         int cols = mat[0].length;
         int n = rows * cols;
         int[] result = new int[n];
-        int idx = 0;
-        HashMap<Integer, List<Integer>> store = new HashMap<>();
-
+        HashMap<Integer, List<Integer>> diagonalIdxToValuesMap = new HashMap<>();
+        
         for (int row = 0; rows > row; ++row) {
             for (int col = 0; cols > col; ++col) {
-                if (!store.containsKey(row + col)) {
-                    store.put(row + col, new ArrayList<>());
+                if (!diagonalIdxToValuesMap.containsKey(row + col)) {
+                    diagonalIdxToValuesMap.put(row + col, new ArrayList<>());
                 }
-                store.get(row + col).add(mat[row][col]);
+
+                diagonalIdxToValuesMap.get(row + col).add(mat[row][col]);
             }
         }
 
-        for (int num = 0; rows + cols - 2 >= num; ++num) {
-            List<Integer> items = store.get(num);
+        for (int diagonalIdx = 0, idx = 0; rows + cols - 1 > diagonalIdx; ++diagonalIdx) {
+            List<Integer> items = diagonalIdxToValuesMap.get(diagonalIdx);
+            int nextIdx = idx;
 
-            if (1 != (num&1)) {
-                Collections.reverse(items);
+            idx += items.size();
+
+            if (0 == diagonalIdx%2) {
+                nextIdx += items.size() - 1;
             }
 
             for (int item : items) {
-                result[idx++] = item;
+                result[nextIdx] = item;
+
+                if (0 == diagonalIdx%2) {
+                    --nextIdx;
+                } else {
+                    ++nextIdx;
+                }
             }
         }
 

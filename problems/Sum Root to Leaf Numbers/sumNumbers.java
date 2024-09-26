@@ -15,26 +15,31 @@
  */
 class Solution {
     public int sumNumbers(TreeNode root) {
-        int rootToLeaf = 0, currNumber = 0;
-        Deque<Pair<TreeNode, Integer>> stack = new ArrayDeque();
-        stack.push(new Pair(root, 0));
+        int result = 0;
+        Stack<Pair<TreeNode, Integer>> bfs = new Stack<>();
 
-        while (!stack.isEmpty()) {
-            Pair<TreeNode, Integer> p = stack.pop();
-            root = p.getKey();
-            currNumber = p.getValue();
+        if (null != root) {
+            bfs.add(new Pair(root, 0));
+        }
 
-            if (root != null) {
-                currNumber = currNumber * 10 + root.val;
-                // if it's a leaf, update root-to-leaf sum
-                if (root.left == null && root.right == null) {
-                    rootToLeaf += currNumber;
-                } else {
-                    stack.push(new Pair(root.right, currNumber));
-                    stack.push(new Pair(root.left, currNumber));
+        while (!bfs.isEmpty()) {
+            Pair<TreeNode, Integer> pair = bfs.pop();
+            TreeNode node = pair.getKey();
+            int currNumber = pair.getValue();
+
+            currNumber = 10 * currNumber + node.val;
+
+            if (null == node.left && null == node.right) {
+                result += currNumber;
+            } else {
+                if (null != node.left) {
+                    bfs.push(new Pair(node.left, currNumber));
+                }
+                if (null != node.right) {
+                    bfs.push(new Pair(node.right, currNumber));
                 }
             }
         }
-        return rootToLeaf;
+        return result;
     }
 }

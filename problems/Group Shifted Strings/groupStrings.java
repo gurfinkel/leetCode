@@ -1,28 +1,27 @@
 class Solution {
     public List<List<String>> groupStrings(String[] strings) {
         List<List<String>> result = new ArrayList<>();
-        HashMap<String, Integer> store = new HashMap<>();
+        HashMap<String, Integer> codeToIdxMap = new HashMap<>();
 
-        for (String item : strings) {
-            String code = getCode(item);
+        for (String string : strings) {
+            String code = getCode(string);
 
-            if (store.containsKey(code)) {
-                result.get(store.get(code)).add(item);
-            } else {
+            if (!codeToIdxMap.containsKey(code)) {
+                codeToIdxMap.put(code, result.size());
                 result.add(new ArrayList<>());
-                store.put(code, result.size() - 1);
-                result.get(result.size() - 1).add(item);
             }
+
+            result.get(codeToIdxMap.get(code)).add(string);
         }
 
         return result;
     }
 
-    String getCode(String str) {
+    private String getCode(String item) {
         StringBuilder sb = new StringBuilder();
 
-        for (int idx = 1; str.length() > idx; ++idx) {
-            sb.append('a' + (str.charAt(idx) - str.charAt(0) + 26) % 26);
+        for (int idx = 1; item.length() > idx; ++idx) {
+            sb.append('a' + (item.charAt(idx) - item.charAt(0) + 26) % 26);
         }
 
         return sb.toString();
