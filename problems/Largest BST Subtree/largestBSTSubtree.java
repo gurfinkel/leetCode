@@ -19,31 +19,30 @@ class Solution {
             return 0;
         }
 
-		if (isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
-			return countNodes(root);
-		}
+        if (isBst(root, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
+            return getNodeCount(root);
+        }
 
-		return Math.max(largestBSTSubtree(root.left), largestBSTSubtree(root.right));
-	}
+        return Math.max(largestBSTSubtree(root.left), largestBSTSubtree(root.right));
+    }
 
-
-	private boolean isBST(TreeNode node, int lo, int hi) {
-		if (null == node) {
+    private boolean isBst(TreeNode node, int minValue, int maxValue) {
+        if (null == node) {
             return true;
         }
 
-		if (lo >= node.val || hi <= node.val) {
+        if (minValue >= node.val || maxValue <= node.val) {
             return false;
         }
 
-		return isBST(node.left, lo, node.val) && isBST(node.right, node.val, hi);
-	}
+        return isBst(node.left, minValue, node.val) && isBst(node.right, node.val, maxValue);
+    }
 
-	private int countNodes(TreeNode node) {
-		if (node == null) {
+    private int getNodeCount(TreeNode node) {
+        if (null == node) {
             return 0;
         }
 
-		return 1 + countNodes(node.left) + countNodes(node.right);
-	}
+        return 1 + getNodeCount(node.left) + getNodeCount(node.right);
+    }
 }
