@@ -1,57 +1,85 @@
 class Solution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        return findMedianSortedArraysBs(nums1, nums2);
+        // return findMedianSortedArraysMergeSort(nums1, nums2);
+    }
+
+    private double findMedianSortedArraysMergeSort(int[] nums1, int[] nums2) {
         int m = nums1.length;
         int n = nums2.length;
+        int[] result = new int[m + n];
+        int idx = 0;
+        int idx1 = 0;
+        int idx2 = 0;
 
-        if (m > n) {
-            int[] tmpArray = nums1;
-            nums1 = nums2;
-            nums2 = tmpArray;
+        while (m > idx1 || n > idx2) {
+            int num1 = Integer.MAX_VALUE;
+            int num2 = Integer.MAX_VALUE;
 
-            int tmpIdx = m;
-            m = n;
-            n = tmpIdx;
+            if (m > idx1) {
+                num1 = nums1[idx1];
+            }
+            if (n > idx2) {
+                num2 = nums2[idx2];
+            }
+
+            if (num1 < num2) {
+                result[idx] = num1;
+                ++idx1;
+            } else {
+                result[idx] = num2;
+                ++idx2;
+            }
+
+            ++idx;
         }
 
-        int iMin = 0;
-        int iMax = m;
-        int mid = (m + n + 1) / 2;
+        if (0 == (m + n)%2) {
+            return 0.5*result[(m + n)/2 - 1] + 0.5*result[(m + n)/2];
+        } else {
+            return result[(m + n)/2];
+        }
+    }
 
-        while (iMin <= iMax) {
-            int i = (iMin + iMax) / 2;
-            int j = mid - i;
+    private double findMedianSortedArraysBs(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        int length = m + n;
 
-            if (i < iMax && nums2[j-1] > nums1[i]) {
-                iMin = i + 1;
-            } else if (i > iMin && nums1[i-1] > nums2[j]) {
-                iMax = i - 1;
+        if (1 == (length) % 2) {
+            return getMedian(nums1, nums2, length / 2, 0, m - 1, 0, n - 1);
+        } else {
+            return 0.5*getMedian(nums1, nums2, length / 2, 0, m - 1, 0, n - 1) +
+                0.5*getMedian(nums1, nums2, length / 2 - 1, 0, m - 1, 0, n - 1);
+        }
+    }
+
+    public int getMedian(int[] nums1, int[] nums2, int k, int start1, int end1, int start2, int end2
+    ) {
+        if (end1 < start1) {
+            return nums2[k - start1];
+        }
+        if (end2 < start2) {
+            return nums1[k - start2];
+        }
+
+        int idx1 = (start1 + end1) / 2;
+        int idx2 = (start2 + end2) / 2;
+        int value1 = nums1[idx1];
+        int value2 = nums2[idx2];
+
+        if (k > idx1 + idx2) {
+            if (value1 > value2) {
+                return getMedian(nums1, nums2, k, start1, end1, 1 + idx2, end2);
             } else {
-                int maxLeft = 0;
-
-                if (i == 0) {
-                    maxLeft = nums2[j-1];
-                } else if (j == 0) {
-                    maxLeft = nums1[i-1];
-                } else {
-                    maxLeft = Math.max(nums1[i-1], nums2[j-1]);
-                }
-                if ((m + n) % 2 == 1) {
-                    return maxLeft;
-                }
-
-                int minRight = 0;
-
-                if (i == m) {
-                    minRight = nums2[j];
-                } else if (j == n) {
-                    minRight = nums1[i];
-                } else {
-                    minRight = Math.min(nums2[j], nums1[i]);
-                }
-
-                return (maxLeft + minRight) / 2.0;
+                return getMedian(nums1, nums2, k, 1 + idx1, end1, start2, end2);
+            }
+        } else {
+            if (value1 > value2) {
+                return getMedian(nums1, nums2, k, start1, idx1 - 1, start2, end2);
+            } else {
+                return getMedian(nums1, nums2, k, start1, end1, start2, idx2 - 1);
             }
         }
-        return 0.0;
     }
 }

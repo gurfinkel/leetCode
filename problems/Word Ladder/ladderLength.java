@@ -1,6 +1,6 @@
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        HashMap<String, List<String>> store = new HashMap<>();
+        HashMap<String, List<String>> edgeWordToWordsMap = new HashMap<>();
         Queue<String> bfs = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
         int level = 1;
@@ -9,10 +9,11 @@ class Solution {
             for (int idx = 0; word.length() > idx; ++idx) {
                 String edgeWord = word.substring(0, idx) + '$' + word.substring(1 + idx);
 
-                if (!store.containsKey(edgeWord)) {
-                    store.put(edgeWord, new ArrayList<>());
+                if (!edgeWordToWordsMap.containsKey(edgeWord)) {
+                    edgeWordToWordsMap.put(edgeWord, new ArrayList<>());
                 }
-                store.get(edgeWord).add(word);
+
+                edgeWordToWordsMap.get(edgeWord).add(word);
             }
         }
 
@@ -20,25 +21,22 @@ class Solution {
         visited.add(beginWord);
 
         while (!bfs.isEmpty()) {
-            int size = bfs.size();
-
-            for (int count = 0; size > count; ++count) {
+            for (int count = bfs.size(); 0 < count; --count) {
                 String word = bfs.poll();
-
+                
                 for (int idx = 0; word.length() > idx; ++idx) {
                     String edgeWord = word.substring(0, idx) + '$' + word.substring(1 + idx);
-                    if (!store.containsKey(edgeWord)) {
-                        continue;
-                    }
-                    List<String> adjacentWords = store.get(edgeWord);
 
-                    for (String adjacentWord : adjacentWords) {
-                        if (endWord.equals(adjacentWord)) {
-                            return 1 + level;
-                        }
-                        if (!visited.contains(adjacentWord)) {
-                            bfs.add(adjacentWord);
-                            visited.add(adjacentWord);
+                    if (edgeWordToWordsMap.containsKey(edgeWord)) {
+                        List<String> nextWords = edgeWordToWordsMap.get(edgeWord);
+
+                        for (String nextWord : nextWords) {
+                            if (endWord.equals(nextWord)) {
+                                return 1 + level;
+                            } else if (!visited.contains(nextWord)) {
+                                bfs.add(nextWord);
+                                visited.add(nextWord);
+                            }
                         }
                     }
                 }

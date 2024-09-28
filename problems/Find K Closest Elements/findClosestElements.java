@@ -1,21 +1,21 @@
 class Solution {
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        // Convert from array to list first to make use of Collections.sort()
-        List<Integer> sortedArr = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>(k);
+        int left = 0;
+		int right = arr.length - 1;
 
-        for (int num: arr) {
-            sortedArr.add(num);
-        }
-
-        // Sort using custom comparator
-        Collections.sort(sortedArr, (num1, num2) -> Math.abs(num1 - x) - Math.abs(num2 - x));
-
-        // Only take k elements
-        sortedArr = sortedArr.subList(0, k);
-
-        // Sort again to have output in ascending order
-        Collections.sort(sortedArr);
-
-        return sortedArr;
+		while (k <= right - left) {
+			if (Math.abs(arr[left] - x) > Math.abs(arr[right] - x)) {
+				++left;
+			} else {
+				--right;
+			}
+		}
+		
+		for (int idx = left; right >= idx; ++idx) {
+			result.add(arr[idx]);
+		}
+        
+		return result;
     }
 }
