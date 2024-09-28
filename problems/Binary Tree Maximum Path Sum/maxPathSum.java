@@ -20,20 +20,20 @@ class Solution {
         return (int)result;
     }
 
-    long result = Integer.MIN_VALUE;
+    private long result = Integer.MIN_VALUE;
 
-    long dfs(TreeNode note) {
-        if (null == note) {
+    private int dfs(TreeNode node) {
+        if (null == node) {
             return 0;
         }
 
-        long leftPath = dfs(note.left);
-        long rightPath = dfs(note.right);
-        long nodeAndOnePath = Math.max(leftPath + note.val, rightPath + note.val);
-        long nodeAndTwoPath = Math.max(note.val, leftPath + note.val + rightPath);
+        int leftPathSum = dfs(node.left);
+        int rightPathSum = dfs(node.right);
+        int maxNodeAndOnePathSum = node.val + Math.max(leftPathSum, rightPathSum);
+        int maxNodeAndTwoPathSum = Math.max(node.val, leftPathSum + node.val + rightPathSum);
 
-        result = Math.max(result, Math.max(nodeAndOnePath, nodeAndTwoPath));
+        result = Math.max(result, Math.max(maxNodeAndOnePathSum, maxNodeAndTwoPathSum));
 
-        return Math.max(note.val, Math.max(leftPath, rightPath) + note.val);
+        return Math.max(node.val, maxNodeAndOnePathSum);
     }
 }

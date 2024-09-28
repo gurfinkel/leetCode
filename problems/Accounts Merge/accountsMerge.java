@@ -1,9 +1,10 @@
 class Solution {
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
-        HashMap<Integer, List<String>> result = new HashMap<>();
-        HashMap<String, String> emailToName = new HashMap<>();
-        HashMap<String, Integer> emailToId = new HashMap<>();
+        List<List<String>> result = new ArrayList<>();
         Dsu dsu = new Dsu(10000);
+        HashMap<Integer, List<String>> idToEmailsMap = new HashMap<>();
+        HashMap<String, String> emailToNameMap = new HashMap<>();
+        HashMap<String, Integer> emailToIdMap = new HashMap<>();
         int id = 0;
 
         for (List<String> account : accounts) {
@@ -12,41 +13,44 @@ class Solution {
             for (int idx = 1; account.size() > idx; ++idx) {
                 String email = account.get(idx);
 
-                if (!emailToName.containsKey(email)) {
-                    emailToName.put(email, name);
+                if (!emailToNameMap.containsKey(email)) {
+                    emailToNameMap.put(email, name);
                 }
 
-                if (!emailToId.containsKey(email)) {
-                    emailToId.put(email, id++);
+                if (!emailToIdMap.containsKey(email)) {
+                    emailToIdMap.put(email, id);
+                    ++id;
                 }
 
-                dsu.union(emailToId.get(account.get(1)), emailToId.get(email));
+                dsu.union(emailToIdMap.get(account.get(1)), emailToIdMap.get(email));
             }
         }
 
-        for (String email : emailToName.keySet()) {
-            int idx = dsu.find(emailToId.get(email));
+        for (Map.Entry<String, Integer> emailAndId : emailToIdMap.entrySet()) {
+            int parentId = dsu.find(emailAndId.getValue());
 
-            if (!result.containsKey(idx)) {
-                result.put(idx, new ArrayList<String>());
+            if (!idToEmailsMap.containsKey(parentId)) {
+                idToEmailsMap.put(parentId, new ArrayList<String>());
             }
 
-            result.get(idx).add(email);
+            idToEmailsMap.get(parentId).add(emailAndId.getKey());
         }
 
-        for (int idx : result.keySet()) {
-            Collections.sort(result.get(idx));
-            result.get(idx).add(0, emailToName.get(result.get(idx).get(0)));
+        for (int parentId : idToEmailsMap.keySet()) {
+            String name = emailToNameMap.get(idToEmailsMap.get(parentId).get(0));
+
+            Collections.sort(idToEmailsMap.get(parentId));
+            idToEmailsMap.get(parentId).add(0, name);
         }
 
-        return new ArrayList(result.values());
+        return new ArrayList(idToEmailsMap.values());
     }
 
-    class Dsu {
+    private class Dsu {
         int[] parents;
         int[] ranks;
 
-        Dsu(int n) {
+        public Dsu(int n) {
             parents = new int[n];
             ranks = new int[n];
 
@@ -55,27 +59,27 @@ class Solution {
             }
         }
 
-        void union(int x, int y) {
-            int px = find(x);
-            int py = find(y);
-
-            if (px != py) {
-                if (ranks[px] > ranks[py]) {
-                    parents[py] = px;
-                    ++ranks[px];
-                } else {
-                    parents[px] = py;
-                    ++ranks[py];
-                }
+        public int find(int a) {
+            if (parents[a] != a) {
+                parents[a] = find(parents[a]);
             }
+
+            return parents[a];
         }
 
-        int find(int x) {
-            if (parents[x] != x) {
-                parents[x] = find(parents[x]);
-            }
+        public void union(int a, int b) {
+            int parentA = find(a);
+            int parentB = find(b);
 
-            return parents[x];
+            if (parentA != parentB) {
+                if (ranks[parentA] > ranks[parentB]) {
+                    parents[parentB] = parentA;
+                    ++ranks[parentA];
+                } else {
+                    parents[parentA] = parentB;
+                    ++ranks[parentB];
+                }
+            }
         }
     }
 }

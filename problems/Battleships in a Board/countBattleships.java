@@ -1,16 +1,11 @@
 class Solution {
     public int countBattleships(char[][] board) {
-        List<int[]> DIRECTIONS = Arrays.asList(
-            new int[] {-1,  0},
-            new int[] { 0, -1}
-        );
-
-        int rows = board.length;
-
-        if (0 == rows) {
+        if (0 == board.length) {
             return 0;
         }
 
+        int[][] directions = new int[][] {{-1,0},{0,-1}};
+        int rows = board.length;
         int cols = board[0].length;
         int result = 0;
 
@@ -19,7 +14,7 @@ class Solution {
                 if ('X' == board[row][col]) {
                     boolean flag = false;
 
-                    for (int[] dir : DIRECTIONS) {
+                    for (int[] dir : directions) {
                         int newRow = row + dir[0];
                         int newCol = col + dir[1];
 
